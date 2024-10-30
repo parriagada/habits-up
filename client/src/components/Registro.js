@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import './Registro.css';
+
 
 function Registro() {
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -38,7 +40,7 @@ function Registro() {
   };
 
   return (
-    <div>
+    <div className="contenedor-registro">
       <h2>Registro</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -48,6 +50,7 @@ function Registro() {
             id="nombreUsuario"
             value={nombreUsuario}
             onChange={(e) => setNombreUsuario(e.target.value)}
+
             required
           />
         </div>
@@ -58,6 +61,7 @@ function Registro() {
             id="correoElectronico"
             value={correoElectronico}
             onChange={(e) => setCorreoElectronico(e.target.value)}
+
             required
           />
         </div>
@@ -68,6 +72,7 @@ function Registro() {
             id="contrasena"
             value={contrasena}
             onChange={(e) => setContrasena(e.target.value)}
+
             required
           />
         </div>
@@ -75,6 +80,7 @@ function Registro() {
       </form>
     </div>
   );
+
 }
 
 export default Registro;

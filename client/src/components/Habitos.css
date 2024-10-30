@@ -1,77 +1,77 @@
-.contenedor {
-    background-color: #a7d1ab;
+/* Estilos generales minimalistas */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  .contenedor {
+    max-width: 800px;
+    margin: 20px auto;
     padding: 20px;
-    border-radius: 10px;
-    width: 300px; 
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
   }
   
   .titulo {
-    color: #f05454;
     text-align: center;
-    font-size: 24px;
-    margin-bottom: 15px;
+    color: #28a745; /* Verde */
   }
   
   .subtitulo {
-    color: #30475e;
-    font-size: 18px;
-    margin-bottom: 5px;
+    color: #28a745; /* Verde */
+    margin-top: 1.5rem;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
   }
   
   input[type="text"],
-  textarea {
+  input[type="time"],
+  textarea,
+  select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 4px;
     box-sizing: border-box;
   }
   
-  .dias-semana {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  }
-  
-  .dias-semana div {
-    background-color: #f05454;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .boton-crear {
-    background-color: #f05454;
-    color: white;
-    padding: 10px 20px;
+  button {
+    background-color: #28a745; /* Verde */
+    color: #fff;
+    padding: 10px 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    width: 100%;
+    margin-right: 10px;
   }
   
-  /* Media query para pantallas pequeñas (hasta 600px) */
-  @media (max-width: 600px) {
+  button:hover {
+    background-color: #218838; /* Verde más oscuro */
+  }
+  
+  /* Estilos para pantallas más grandes */
+  @media (min-width: 768px) {
     .contenedor {
-      width: 90%; /* Ajustar el ancho al 90% del contenedor padre */
-      margin: 0 auto; /* Centrar el contenedor */
+      max-width: 90%;
     }
   
-    .titulo {
-      font-size: 20px; /* Reducir el tamaño del título */
-    }
-  
-    .subtitulo {
-      font-size: 16px; /* Reducir el tamaño de los subtítulos */
-    }
-  
-    .dias-semana {
-      flex-direction: column; /* Apilar los días de la semana */
-    }
-  
-    .dias-semana div {
-      margin-bottom: 10px; /* Agregar margen inferior a cada día */
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   }

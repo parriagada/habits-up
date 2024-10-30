@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import './Login.css';
+
 
 function Login() {
   const [correoElectronico, setCorreoElectronico] = useState('');
@@ -42,7 +44,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="contenedor-login">
       <h2>Inicio de Sesión</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -51,7 +53,8 @@ function Login() {
             type="email"
             id="correoElectronico"
             value={correoElectronico}
-            onChange={(e) => setCorreoElectronico(e.target.value)}
+            onChange={(e) => setCorreoElectronico(e.target.value)}   
+
             required
           />
         </div>
@@ -61,14 +64,17 @@ function Login() {
             type="password"
             id="contrasena"
             value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
+            onChange={(e) => setContrasena(e.target.value)}   
+
             required
           />
-        </div>
+        </div>   
+
         <button type="submit">Iniciar Sesión</button>
       </form>
     </div>
   );
+
 }
 
 export default Login;

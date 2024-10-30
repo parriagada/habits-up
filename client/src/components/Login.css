@@ -1,0 +1,45 @@
+.contenedor-login {
+    max-width: 400px; /* Ajusta el ancho máximo según tus necesidades */
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .contenedor-login h2 {
+    text-align: center;
+    color: #28a745; /* Verde */
+    margin-bottom: 20px;
+  }
+  
+  .contenedor-login div {
+    margin-bottom: 15px;
+  }
+  
+  .contenedor-login label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .contenedor-login input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .contenedor-login button {
+    background-color: #28a745; /* Verde */
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .contenedor-login button:hover {
+    background-color: #218838; /* Verde más oscuro */
+  }

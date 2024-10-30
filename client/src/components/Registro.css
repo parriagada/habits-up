@@ -1,0 +1,46 @@
+/* Los estilos son prácticamente iguales a los del login.css */
+.contenedor-registro {
+    max-width: 400px; 
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .contenedor-registro h2 {
+    text-align: center;
+    color: #28a745; 
+    margin-bottom: 20px;
+  }
+  
+  .contenedor-registro div {
+    margin-bottom: 15px;
+  }
+  
+  .contenedor-registro label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .contenedor-registro input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .contenedor-registro button {
+    background-color: #28a745; 
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .contenedor-registro button:hover {
+    background-color: #218838; 
+  }

@@ -313,8 +313,8 @@ function Habitos() {
           Agregar
         </button>
       </div>
-    </div>
-  );
+  </div>
+  )
 }
 
 export default Habitos;
