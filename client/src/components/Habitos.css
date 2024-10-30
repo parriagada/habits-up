@@ -1,0 +1,77 @@
+.contenedor {
+    background-color: #a7d1ab;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px; 
+  }
+  
+  .titulo {
+    color: #f05454;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  .subtitulo {
+    color: #30475e;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .dias-semana {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .dias-semana div {
+    background-color: #f05454;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .boton-crear {
+    background-color: #f05454;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  /* Media query para pantallas pequeñas (hasta 600px) */
+  @media (max-width: 600px) {
+    .contenedor {
+      width: 90%; /* Ajustar el ancho al 90% del contenedor padre */
+      margin: 0 auto; /* Centrar el contenedor */
+    }
+  
+    .titulo {
+      font-size: 20px; /* Reducir el tamaño del título */
+    }
+  
+    .subtitulo {
+      font-size: 16px; /* Reducir el tamaño de los subtítulos */
+    }
+  
+    .dias-semana {
+      flex-direction: column; /* Apilar los días de la semana */
+    }
+  
+    .dias-semana div {
+      margin-bottom: 10px; /* Agregar margen inferior a cada día */
+    }
+  }
