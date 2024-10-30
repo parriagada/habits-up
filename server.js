@@ -7,6 +7,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const Usuario = require('./models/Usuario');
 const bcrypt = require('bcrypt');
 const session = require('express-session'); // Importa express-session
+const habitosRouter = require('./routes/habitos');
 require('dotenv').config();
 
 const app = express();
@@ -67,9 +68,9 @@ mongoose.connect(URI, {
 .catch(err => console.error('Error específico al conectar a MongoDB:', err));
 
 // Rutas
-app.use('/habitos', require('./routes/habitos')); // Ruta para manejar los hábitos
 app.use('/usuarios', require('./routes/usuarios')); // Ruta para manejar los usuarios
 app.use('/pomodoro', require('./routes/pomodoro')); // Ruta para manejar los temporizadores Pomodoro
+app.use('/habitos', habitosRouter);
 
 // Ruta de prueba para verificar autenticación (proteger otras rutas de manera similar)
 app.get('/perfil', isAuthenticated, (req, res) => { // Solo usuarios autenticados pueden acceder a esta ruta

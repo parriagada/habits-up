@@ -25,10 +25,11 @@ function Login() {
         console.log(data); // Verifica la respuesta del servidor
 
         // Guarda los datos del usuario (por ejemplo, un token) en el almacenamiento local
-        // localStorage.setItem('token', data.token); // Ajusta según la respuesta del servidor
+        localStorage.setItem('token', data.token); 
+
 
         // Redirige al usuario a la página principal u otra página protegida
-        window.location.href = '/'; 
+        window.location.href = '/habitos'; 
       } else {
         // Manejo de errores, muestra un mensaje al usuario
         const data = await response.json();

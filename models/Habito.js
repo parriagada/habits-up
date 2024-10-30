@@ -6,11 +6,18 @@ const habitoSchema = new mongoose.Schema({
     required: true
   },
   descripcion: {
-    type: String
+    type: String,
+    required: true // Descripción requerida
   },
   recordatorio: {
-    tipo: String, //  'diario', 'semanal', 'mensual', etc.
-    hora: String //  '10:00 AM', etc.
+    tipo: {
+      type: String, // 'diario', 'semanal', 'mensual', etc.
+      required: true // Tipo de recordatorio requerido
+    },
+    hora: {
+      type: String, // '10:00 AM', etc.
+      required: true // Hora del recordatorio requerida
+    }
   },
   // ... otros campos del hábito ...
   usuario: {
