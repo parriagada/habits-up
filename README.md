@@ -15,7 +15,7 @@ Con HabitUps podrás:
 ## 🚀 Tecnologías utilizadas
 
 * **Stack MERN**
-* **Tailwind CSS:** 
+* **Tailwind CSS** 
 * **Jest**
 
 ## 💻 Cómo instalar y ejecutar el proyecto
