@@ -35,4 +35,4 @@ _Próximamente..._
 ## 👥 Contacto
 
 * parriagada
-* aleadev
+* aleasdev
