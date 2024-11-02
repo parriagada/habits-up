@@ -17,7 +17,11 @@ router.post('/', authenticateToken, async (req, res) => {
     const nuevoHabito = new Habito({
       nombre: req.body.nombre,
       descripcion: req.body.descripcion,
-      recordatorio: req.body.recordatorio,
+      recordatorio: {
+        tipo: req.body.recordatorio.tipo,
+        hora: req.body.recordatorio.hora,
+        dias: req.body.recordatorio.dias 
+      },
       usuario: req.user.id,
     });
 

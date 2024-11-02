@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import './Habitos.css'; // Asegúrate de que la ruta sea correcta
+import './Habitos.css';
 
 function Habitos() {
   const [habitos, setHabitos] = useState([]);
@@ -9,8 +9,11 @@ function Habitos() {
     recordatorio: {
       tipo: "",
       hora: "",
+      dias: "",
     },
   });
+
+  const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
   const [editandoHabito, setEditandoHabito] = useState(null);
 
@@ -64,6 +67,7 @@ function Habitos() {
           recordatorio: {
             tipo: nuevoHabito.recordatorio.tipo,
             hora: nuevoHabito.recordatorio.hora,
+            dias: nuevoHabito.recordatorio.dias,
           },
         }),
       });
@@ -77,6 +81,7 @@ function Habitos() {
           recordatorio: {
             tipo: "",
             hora: "",
+            dias: [],
           },
         });
       } else {
@@ -116,26 +121,73 @@ function Habitos() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+  
     if (name.startsWith("recordatorio.")) {
       const campoRecordatorio = name.split(".")[1];
-      setNuevoHabito({
-        ...nuevoHabito,
-        recordatorio: {
-          ...nuevoHabito.recordatorio,
-          [campoRecordatorio]: value,
-        },
-      });
+  
+      if (name === "dias" && type === "checkbox") {
+        // Manejo especial para el array de días
+        setNuevoHabito((prevHabito) => ({
+          ...prevHabito,
+          recordatorio: {
+            ...prevHabito.recordatorio,
+            dias: checked
+              ? [...prevHabito.recordatorio.dias, parseInt(value, 10)]
+              : prevHabito.recordatorio.dias.filter((dia) => dia !== parseInt(value, 10)),
+          },
+        }));
+      } else {
+        // Manejo normal para tipo y hora
+        setNuevoHabito((prevHabito) => ({
+          ...prevHabito,
+          recordatorio: {
+            ...prevHabito.recordatorio,
+            [campoRecordatorio]: value,
+          },
+        }));
+      }
     } else {
-      setNuevoHabito({
-        ...nuevoHabito,
+      // Manejo de otros campos (nombre, descripción)
+      setNuevoHabito((prevHabito) => ({
+        ...prevHabito,
         [name]: value,
-      });
+      }));
     }
   };
 
   const handleEditarClick = (habito) => {
     setEditandoHabito(habito);
+  };
+
+  const marcarComoCumplido = async (habitoId) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No hay token de autenticación.");
+        return;
+      }
+
+      // Realiza una petición al backend para actualizar el estado del hábito
+      const response = await fetch(`http://localhost:5000/habitos/${habitoId}/cumplido`, { // Ajusta la ruta si es necesario
+        method: 'PUT', // O el método HTTP adecuado según tu backend
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Actualiza el estado en la interfaz de usuario si es necesario
+        setHabitos(habitos.map(habito => 
+          habito._id === habitoId ? { ...habito, cumplido: true } : habito // Ajusta la propiedad "cumplido" según tu modelo
+        ));
+      } else {
+        const errorData = await response.json();
+        console.error("Error al marcar el hábito como cumplido:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Error al marcar el hábito como cumplido:", error);
+    }
   };
 
   const guardarCambiosHabito = async (id) => {
@@ -232,6 +284,34 @@ function Habitos() {
                     <option value="semanal">Semanal</option>
                   </select>
                 </div>
+                <div>
+                  <label htmlFor="diasRecordatorio">Días de la semana:</label>
+                  <div id="diasRecordatorio">
+                    {diasSemana.map((dia, index) => (
+                      <label key={index}>
+                        <input
+                          type="checkbox"
+                          name="recordatorio.dias"
+                          value={index}
+                          checked={editandoHabito.recordatorio.dias.includes(index)} // Marcar si el día está en el array
+                          onChange={(e) => {
+                            const diaSeleccionado = parseInt(e.target.value, 10);
+                            setEditandoHabito((prevHabito) => ({
+                              ...prevHabito,
+                              recordatorio: {
+                                ...prevHabito.recordatorio,
+                                dias: e.target.checked
+                                  ? [...prevHabito.recordatorio.dias, diaSeleccionado]
+                                  : prevHabito.recordatorio.dias.filter((d) => d !== diaSeleccionado),
+                              },
+                            }));
+                          }}
+                        />
+                        {dia}
+                      </label>
+                    ))}
+                  </div>
+                </div>                
                 <input
                   type="time"
                   name="recordatorio.hora"
@@ -257,12 +337,29 @@ function Habitos() {
               <div>
                 <h3 className="subtitulo">{habito.nombre}</h3>
                 <p>{habito.descripcion}</p>
-                {habito.recordatorio && (
-                  <p>
-                    Recordatorio: {habito.recordatorio.tipo} a las{" "}
-                    {habito.recordatorio.hora}
-                  </p>
+                {!editandoHabito && (
+                  <div>
+                    {habito.recordatorio && (
+                        <p>
+                        Recordatorio:{" "}
+                        {habito.recordatorio.tipo === "semanal" &&
+                          // Ordena los días antes de mostrarlos
+                          habito.recordatorio.dias
+                            .sort((a, b) => a - b) // Ordena numéricamente
+                            .map((diaNumero) => diasSemana[diaNumero]) // Mapea al nombre del día
+                            .join(", ")
+                        }{" "}
+                        a las {habito.recordatorio.hora}
+                      </p>
+                    )}
+                  </div>
                 )}
+
+                {/* Botón para marcar como cumplido */}
+                <button onClick={() => marcarComoCumplido(habito._id)}>
+                  Cumplido
+                </button>
+                {/* Botones para editar y eliminar */}
                 <button onClick={() => handleEditarClick(habito)}>
                   Editar
                 </button>
@@ -303,6 +400,23 @@ function Habitos() {
             <option value="semanal">Semanal</option>
           </select>
         </div>
+        {/* Mostrar selección de días solo si el tipo es semanal */}
+        {nuevoHabito.recordatorio.tipo === "semanal" && (
+          <div>
+            <label htmlFor="diasRecordatorio">Días de la semana:</label>
+            <div id="diasRecordatorio">
+              {/* Puedes usar checkboxes para cada día de la semana */}
+              <input type="checkbox" name="recordatorio.dias" value="1" onChange={handleChange} /> Lunes
+              <input type="checkbox" name="recordatorio.dias" value="2" onChange={handleChange} /> Martes
+              <input type="checkbox" name="recordatorio.dias" value="3" onChange={handleChange} /> Miercoles
+              <input type="checkbox" name="recordatorio.dias" value="4" onChange={handleChange} /> Jueves
+              <input type="checkbox" name="recordatorio.dias" value="5" onChange={handleChange} /> Viernes
+              <input type="checkbox" name="recordatorio.dias" value="6" onChange={handleChange} /> Sábado
+              <input type="checkbox" name="recordatorio.dias" value="7" onChange={handleChange} /> Domingo
+            </div>
+          </div>
+        )}
+
         <input
           type="time"
           name="recordatorio.hora"
