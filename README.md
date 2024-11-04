@@ -1,4 +1,4 @@
-# HabitUps 🌳
+# HabitsUp 🌳
 
 **¡Cultiva tus hábitos y florece en la universidad!**
 
