@@ -2,76 +2,85 @@
 body {
     font-family: sans-serif;
     margin: 0;
-    background-color: #f4f4f4;
+    background-color: #f2f9ea;
     color: #333;
   }
   
+.contenedor {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.titulo {
+  text-align: center;
+  color: #28a745;
+}
+
+.subtitulo {
+  color: #28a745; 
+  margin-top: 1.5rem;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+input[type="text"],
+input[type="time"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #28a745; /* Verde */
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.3s ease; /* Añade una transición suave */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Añade una sombra sutil */
+}
+
+button:hover {
+  background-color: #218838; /* Verde más oscuro */
+  transform: translateY(-2px); /* Mueve el botón ligeramente hacia arriba */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); /* Aumenta la sombra en hover */
+}
+
+button:active {
+  transform: translateY(1px); /* Mueve el botón ligeramente hacia abajo al hacer clic */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Reduce la sombra al hacer clic */
+}
+
+/* Estilos para pantallas más grandes */
+@media (min-width: 768px) {
   .contenedor {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    max-width: 90%;
   }
-  
-  .titulo {
-    text-align: center;
-    color: #28a745; /* Verde */
-  }
-  
-  .subtitulo {
-    color: #28a745; /* Verde */
-    margin-top: 1.5rem;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
+
   li {
-    margin-bottom: 15px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  
-  input[type="text"],
-  input[type="time"],
-  textarea,
-  select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  button {
-    background-color: #28a745; /* Verde */
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  
-  button:hover {
-    background-color: #218838; /* Verde más oscuro */
-  }
-  
-  /* Estilos para pantallas más grandes */
-  @media (min-width: 768px) {
-    .contenedor {
-      max-width: 90%;
-    }
-  
-    li {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
+}

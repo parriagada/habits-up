@@ -1,0 +1,74 @@
+/* NavBar.css */
+
+/* Estilos base para mobile-first */
+.navbar {
+    background-color: #f2f9ea; 
+    padding: 10px 15px; 
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+  }
+  
+  .logo {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #28a745; 
+  }
+  
+  .nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: none; 
+  }
+  
+  .nav-list li {
+    margin-bottom: 10px; 
+  }
+  
+  /* Estilos de botón para los enlaces de la navbar */
+  .nav-list a {
+    text-decoration: none;
+    background-color: #28a745; /* Color de fondo del botón */
+    color: #fff; /* Color del texto del botón */
+    padding: 10px 15px; /* Espaciado interno del botón */
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer;
+    transition: all 0.3s ease; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .nav-list a:hover {
+    background-color: #218838; /* Color de fondo más oscuro al pasar el ratón */
+    transform: translateY(-2px); /* Mueve el botón ligeramente hacia arriba */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); /* Aumenta la sombra en hover */
+  }
+  
+  .nav-list a:active {
+    transform: translateY(1px); /* Mueve el botón ligeramente hacia abajo al hacer clic */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Reduce la sombra al hacer clic */
+  }
+  
+  /* Icono de hamburguesa para el menú */
+  .menu-toggle {
+    cursor: pointer;
+    display: block; 
+  }
+  
+  /* Estilos para pantallas más grandes */
+  @media (min-width: 768px) {
+    .nav-list {
+      display: flex; 
+    }
+  
+    .nav-list li {
+      margin-left: 20px; 
+      margin-bottom: 0; 
+    }
+  
+    .menu-toggle {
+      display: none; 
+    }
+  }
+  
