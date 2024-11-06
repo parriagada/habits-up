@@ -12,6 +12,21 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
+// Obtener un hábito por ID
+router.get('/:id', authenticateToken, async (req, res) => {
+  try {
+    const habito = await Habito.findOne({ _id: req.params.id, usuario: req.user.id });
+
+    if (!habito) {
+      return res.status(404).json({ message: 'Hábito no encontrado' });
+    }
+
+    res.json(habito);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const nuevoHabito = new Habito({

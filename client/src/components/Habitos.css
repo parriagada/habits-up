@@ -50,7 +50,7 @@ select {
 }
 
 button {
-  background-color: #28a745; /* Verde */
+  background-color: #28a745;
   color: #fff;
   padding: 10px 15px;
   border: none;
@@ -62,7 +62,7 @@ button {
 }
 
 button:hover {
-  background-color: #218838; /* Verde más oscuro */
+  background-color: #218838;
   transform: translateY(-2px); /* Mueve el botón ligeramente hacia arriba */
   box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); /* Aumenta la sombra en hover */
 }
@@ -83,4 +83,32 @@ button:active {
     align-items: center;
     justify-content: space-between;
   }
+}
+
+.subtitulo a {
+  text-decoration: none; /* Elimina el subrayado */
+  color: #218838; /* Color de enlace, cámbialo a tu gusto */
+  font-weight: bold; /* Texto en negrita */
+  padding: 5px 5px; /* Espaciado interno para simular un botón */
+  border-radius: 5px; /* Bordes redondeados */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+  transition: all 0.3s ease; /* Transición suave */
+}
+
+.subtitulo a:hover {
+  background-color: #218838; /* Color de fondo al pasar el ratón */
+  color: white; /* Color del texto al pasar el ratón */
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+}
+
+.imagen-habito {
+  display: flex; /* Habilita Flexbox para centrar */
+  justify-content: center; /* Centra horizontalmente */
+  margin-bottom: 20px; /* Añade un margen inferior */
+}
+
+.imagen-habito img {
+  max-width: 100%; /* Asegura que la imagen no se salga del contenedor */
+  height: auto; /* Mantiene la relación de aspecto */
+  max-height: 300px; /* Establece una altura máxima para la imagen */ 
 }

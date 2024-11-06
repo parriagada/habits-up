@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './Habitos.css';
+import { Link } from 'react-router-dom';
 
 function Habitos() {
   const [habitos, setHabitos] = useState([]);
@@ -335,7 +336,7 @@ function Habitos() {
               </div>
             ) : (
               <div>
-                <h3 className="subtitulo">{habito.nombre}</h3>
+                <h3 className="subtitulo" ><Link to={`/habitos/${habito._id}`}>{habito.nombre}</Link></h3>
                 <p>{habito.descripcion}</p>
                 {!editandoHabito && (
                   <div>

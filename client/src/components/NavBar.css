@@ -24,6 +24,7 @@
   
   .nav-list li {
     margin-bottom: 10px; 
+    background-color: transparent;
   }
   
   /* Estilos de botón para los enlaces de la navbar */
@@ -56,6 +57,13 @@
     display: block; 
   }
   
+.nav-list .disabled {
+  pointer-events: none; /* Evita que el enlace se pueda clicar */
+  opacity: 0.5; /* Reduce la opacidad para un efecto visual */
+  cursor: default; /* Cambia el cursor a un puntero normal */
+}
+
+
   /* Estilos para pantallas más grandes */
   @media (min-width: 768px) {
     .nav-list {
@@ -72,3 +80,4 @@
     }
   }
   
+
