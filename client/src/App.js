@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import NavBar from './components/NavBar'
 import Registro from './components/Registro';
 import Login from './components/Login';
@@ -7,8 +7,7 @@ import Habitos from './components/Habitos';
 import HabitoDetalle from './components/HabitoDetalle';
 
 function App() {
-  const isLoggedIn = !!localStorage.getItem('token'); // Verifica si el token existe
-
+   const isLoggedIn = !!localStorage.getItem('token');
   return (
     <BrowserRouter>
       <div>

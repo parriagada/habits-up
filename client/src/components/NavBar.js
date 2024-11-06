@@ -1,6 +1,7 @@
 import React from 'react';
 import './NavBar.css';
-import { Link } from 'react-router-dom'; 
+import { Link, useLocation } from 'react-router-dom'; 
+import { useEffect } from 'react';
 
 function Navbar() {
   const isLoggedIn = !!localStorage.getItem('token'); // Verifica si el token existe
@@ -9,6 +10,32 @@ function Navbar() {
     localStorage.removeItem('token'); // Elimina el token del almacenamiento local
     window.location.href = '/login'; // Redirige al usuario a la página de inicio de sesión
   };
+
+  const location = useLocation();
+  const generateTitle = () => {
+    const path = location.pathname;
+    switch (path) {
+      case '/habitos':
+        return 'HabitsUp | Hábitos';
+      case '/pomodoro':
+        return 'HabitsUp | Pomodoro';
+      case '/comunidad':
+        return 'HabitsUp | Comunidad';
+      case '/perfil':
+        return 'HabitsUp | Perfil';
+      case '/registro':
+        return 'HabitsUp | Registro';
+      case '/login':
+        return 'HabitsUp | Iniciar Sesión';
+      default:
+        return 'HabitsUp';
+    }
+  };
+
+  useEffect(() => {
+    document.title = generateTitle();
+  }, [location]); // Update title whenever location changes
+
 
   return (
     <nav className="navbar">
@@ -43,7 +70,7 @@ function Navbar() {
 
         {isLoggedIn && (
           <li>
-            <button onClick={handleLogout}>Cerrar sesión</button>
+            <Link to="/login" onClick={handleLogout}>Cerrar sesión</Link> 
           </li>
         )}
         {/* Opciones solo para usuarios no autenticados */}
