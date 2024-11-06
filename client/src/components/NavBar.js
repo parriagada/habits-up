@@ -34,7 +34,7 @@ function Navbar() {
 
   useEffect(() => {
     document.title = generateTitle();
-  }, [location]); // Update title whenever location changes
+  }, [location]); 
 
 
   return (

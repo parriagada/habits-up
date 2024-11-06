@@ -14,7 +14,22 @@
     font-size: 1.2rem;
     color: #28a745; 
   }
+
+  @keyframes wobbly {
+    0% { transform: translateX(0%); }
+    15% { transform: translateX(-2.5%) rotate(-1deg); }
+    30% { transform: translateX(2%) rotate(1deg); }
+    45% { transform: translateX(-1.5%) rotate(-0.5deg); }
+    60% { transform: translateX(1%) rotate(0.5deg); }
+    75% { transform: translateX(-0.5%) rotate(-0.25deg); }
+    100% { transform: translateX(0%); }
+  }
   
+  /* Aplica la animación al logo */
+  .logo:hover {
+    animation: wobbly 0.8s ease-in-out infinite;
+  }
+
   .nav-list {
     list-style: none;
     margin: 0;

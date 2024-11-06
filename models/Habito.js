@@ -1,43 +1,12 @@
 const mongoose = require('mongoose');
 
-const habitoSchema = new mongoose.Schema({
-  nombre: {
-    type: String,
-    required: true
-  },
-  descripcion: {
-    type: String,
-    required: true // Descripción requerida
-  },
-  recordatorio: {
-    tipo: {
-      type: String,
-      required: true
-    },
-    hora: {
-      type: String,
-      required: true
-    },
-    dias: { // Mueve el campo 'dias' aquí
-      type: [Number],
-      default: []
-    },
-  },
-  usuario: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Usuario',
-    required: true
-  },
-  cumplimiento: [{
-    fecha: { 
-      type: Date, 
-      default: Date.now 
-    },
-    completado: { 
-      type: Boolean, 
-      default: false 
-    }
-  }]
+const HabitoSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+  nombre: { type: String, required: true },
+  descripcion: String,
+  recordatorio: mongoose.Schema.Types.Mixed, 
+  usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+  cumplimiento: mongoose.Schema.Types.Mixed,
 });
 
-module.exports = mongoose.model('Habito', habitoSchema);
+module.exports = mongoose.model('Habito', HabitoSchema);
