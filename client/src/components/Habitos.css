@@ -112,3 +112,9 @@ button:active {
   height: auto; /* Mantiene la relación de aspecto */
   max-height: 300px; /* Establece una altura máxima para la imagen */ 
 }
+
+.nivel-habito {
+  text-align: center; /* Centra el texto horizontalmente */
+  font-size: 1.2em;   /* Ajusta el tamaño de fuente si es necesario */
+  margin-top: 10px;   /* Ajusta el margen superior si es necesario */
+}

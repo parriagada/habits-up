@@ -51,7 +51,7 @@ function HabitoDetalle() {
   }
 
   const formatDaysOfWeek = (daysArray) => {
-    const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     return daysArray.map(dayIndex => diasSemana[dayIndex]).join(', ');
   };
 
@@ -61,6 +61,7 @@ function HabitoDetalle() {
       <div className="imagen-habito">
         <img className="imagen-habito" src="https://preview.redd.it/2cmwtrej0hc51.png?auto=webp&s=d2fb679806db7a9e908e6f044ee3e72ee56d47a6" alt={habito.nombre} /> 
       </div>
+      <p className="nivel-habito">Nivel: {habito.nivelCumplimiento} / 10</p> 
       <p>{habito.descripcion}</p>
 
       {habito.recordatorio && (
