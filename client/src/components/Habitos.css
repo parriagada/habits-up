@@ -1,3 +1,7 @@
+:root{
+  --pixel-size: 2 ;
+}
+
 /* Estilos generales minimalistas */
 body {
     font-family: sans-serif;
@@ -101,20 +105,58 @@ button:active {
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
 }
 
-.imagen-habito {
-  display: flex; /* Habilita Flexbox para centrar */
-  justify-content: center; /* Centra horizontalmente */
-  margin-bottom: 20px; /* Añade un margen inferior */
-}
 
-.imagen-habito img {
-  max-width: 100%; /* Asegura que la imagen no se salga del contenedor */
-  height: auto; /* Mantiene la relación de aspecto */
-  max-height: 300px; /* Establece una altura máxima para la imagen */ 
-}
+
 
 .nivel-habito {
   text-align: center; /* Centra el texto horizontalmente */
   font-size: 1.2em;   /* Ajusta el tamaño de fuente si es necesario */
   margin-top: 10px;   /* Ajusta el margen superior si es necesario */
+}
+
+.imagen-habito {
+  display: block;
+  margin: 0 auto;
+  
+  margin-bottom: 20px; /* Añade un margen inferior */
+  width: calc(160px * var(--pixel-size)); /* Width of a single bonsai */
+  /* background-color: wheat; */
+  overflow: hidden;
+}
+
+
+/* .bonsai-spritesheet {
+  width: calc(160px * 10 * var(--pixel-size));
+  image-rendering: pixelated;
+
+} */
+
+.bonsai-spritesheet {
+
+  width: calc(160px * 10 * var(--pixel-size));
+  height: calc(160px * var(--pixel-size));
+  image-rendering: pixelated;
+  /* background-image: url(../images/bonsai160x160.png);  Set the sprite sheet as the background */
+  background-image: url(../../public/images/bonsai160x160.png);  /*Set the sprite sheet as the background */
+  background-repeat: no-repeat; /* Prevent the background image from repeating */
+  background-size: 100%;
+  /* background-color: aquamarine; */
+  
+}
+
+
+@media screen and (min-width: 768px) {
+  :root {
+    --pixel-size: 3;
+  }
+}
+
+@keyframes moveSpritesheet {
+  from {
+    transform: translate3d(0px, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+  
 }

@@ -59,7 +59,24 @@ function HabitoDetalle() {
     <div className="contenedor">
       <h2 className="titulo">{habito.nombre}</h2>
       <div className="imagen-habito">
-        <img className="imagen-habito" src="https://preview.redd.it/2cmwtrej0hc51.png?auto=webp&s=d2fb679806db7a9e908e6f044ee3e72ee56d47a6" alt={habito.nombre} /> 
+        {/* <img className="imagen-habito" src="https://preview.redd.it/2cmwtrej0hc51.png?auto=webp&s=d2fb679806db7a9e908e6f044ee3e72ee56d47a6" alt={habito.nombre} />  */}
+        
+        {/* <img className='bonsai-spritesheet' src={bonsaiImage} alt={habito.nombre} /> */}
+        {/* <img
+          className="bonsai-spritesheet"
+          src={bonsaiImage}
+          alt={habito.nombre}
+          style={{ 
+            backgroundPositionX: `-${(habito.nivelCumplimiento - 1) * 160 * 4}px` 
+          }}
+        />  */}
+
+        <div className="bonsai-spritesheet" 
+        style={{ 
+            backgroundPositionX: `calc(${-(habito.nivelCumplimiento - 1)} * 160px * var(--pixel-size))`,
+          }} alt={habito.nombre}   >
+
+        </div>
       </div>
       <p className="nivel-habito">Nivel: {habito.nivelCumplimiento} / 10</p> 
       <p>{habito.descripcion}</p>
