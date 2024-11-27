@@ -9,6 +9,37 @@ function HabitoDetalle() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const marcarComoCumplido = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No hay token de autenticación.");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:5000/habitos/${habitoId}/cumplido`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify({ cumplido: true }) 
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setHabito({...habito, ...data}); // Update the existing habit state
+      } else {
+        const errorData = await response.json();
+        console.error("Error al marcar el hábito como cumplido:", errorData.message);
+        // Consider adding error handling/display to the user
+      }
+    } catch (error) {
+      console.error("Error al marcar el hábito como cumplido:", error);
+      // Consider adding error handling/display to the user
+    }
+  };
+
   useEffect(() => {
     const fetchHabitoDetalle = async () => {
       try {
@@ -59,17 +90,6 @@ function HabitoDetalle() {
     <div className="contenedor">
       <h2 className="titulo">{habito.nombre}</h2>
       <div className="imagen-habito">
-        {/* <img className="imagen-habito" src="https://preview.redd.it/2cmwtrej0hc51.png?auto=webp&s=d2fb679806db7a9e908e6f044ee3e72ee56d47a6" alt={habito.nombre} />  */}
-        
-        {/* <img className='bonsai-spritesheet' src={bonsaiImage} alt={habito.nombre} /> */}
-        {/* <img
-          className="bonsai-spritesheet"
-          src={bonsaiImage}
-          alt={habito.nombre}
-          style={{ 
-            backgroundPositionX: `-${(habito.nivelCumplimiento - 1) * 160 * 4}px` 
-          }}
-        />  */}
 
         <div className="bonsai-spritesheet" 
         style={{ 
@@ -93,6 +113,9 @@ function HabitoDetalle() {
       )}
       <button className="boton-crear">
         <a href="/habitos" style={{ textDecoration: 'none', color: 'inherit' }}>Volver a Hábitos</a>
+      </button>
+      <button onClick={() => marcarComoCumplido(habito._id)}>
+                  Cumplido
       </button>
     </div>
   );

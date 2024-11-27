@@ -44,8 +44,8 @@ function Registro() {
     const errores = {};
 
     // Verifica la longitud
-    if (contrasena.length < 8) {
-      errores.longitud = 'La contraseña debe tener al menos 8 caracteres.';
+    if (contrasena.length < 12) {
+      errores.longitud = 'La contraseña debe tener al menos 12 caracteres.';
     }
 
     // Verifica que contenga al menos una letra mayúscula
