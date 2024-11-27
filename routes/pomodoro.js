@@ -1,75 +1,71 @@
 const express = require('express');
 const router = express.Router();
-const Pomodoro = require('../models/Pomodoro'); // Ajusta la ruta si es necesario
+const Pomodoro = require('../models/Pomodoro');
+const { authenticateToken } = require('../middleware/authMiddleware'); // Asegúrate de tener este middleware
 
 // Obtener todos los pomodoros de un usuario
-router.get('/usuario/:usuarioId', async (req, res) => {
-  try {
-    const pomodoros = await Pomodoro.find({ usuario: req.params.usuarioId });
-    res.json(pomodoros);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Obtener un pomodoro específico por ID
-router.get('/:id', getPomodoro, (req, res) => {
-  res.json(res.pomodoro);
+router.get('/', authenticateToken, async (req, res) => {
+    try {
+        const pomodoros = await Pomodoro.find({ usuario: req.user.id });
+        res.json(pomodoros);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 
 // Crear un nuevo pomodoro
-router.post('/', async (req, res) => {
-  const pomodoro = new Pomodoro({
-    fecha: req.body.fecha, 
-    duracion: req.body.duracion,
-    usuario: req.body.usuario, // ID del usuario al que pertenece el pomodoro
-    // ... otros campos del modelo Pomodoro
-  });
+router.post('/', authenticateToken, async (req, res) => {
+    const pomodoro = new Pomodoro({
+      concentracion: req.body.concentracion,
+      descanso: req.body.descanso,
+      numDescansos: req.body.numDescansos,
+      usuario: req.user.id, // usuario del token
+      objetivo: req.body.objetivo
+    });
 
-  try {
-    const nuevoPomodoro = await pomodoro.save();
-    res.status(201).json(nuevoPomodoro);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    try {
+      const nuevoPomodoro = await pomodoro.save();
+      res.status(201).json(nuevoPomodoro);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
-// Actualizar un pomodoro existente (opcional, puede que no sea necesario)
-router.patch('/:id', getPomodoro, async (req, res) => {
-  // ... lógica para actualizar campos del pomodoro
-
+router.put('/:id/iniciar', authenticateToken, async (req, res) => {
   try {
-    const pomodoroActualizado = await res.pomodoro.save();
-    res.json(pomodoroActualizado);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Eliminar un pomodoro
-router.delete('/:id', getPomodoro, async (req, res) => {
-  try {
-    await res.pomodoro.remove();
-    res.json({ message: 'Pomodoro eliminado' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Middleware para obtener un pomodoro por ID
-async function getPomodoro(req, res, next) {
-  let pomodoro;
-  try {
-    pomodoro = await Pomodoro.findById(req.params.id);
-    if (pomodoro == null) {
+    const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+    if (!pomodoro) {
       return res.status(404).json({ message: 'Pomodoro no encontrado' });
     }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
 
-  res.pomodoro = pomodoro;
-  next();
-}
+    pomodoro.estado = 'concentracion';  // Set to 'concentracion' when starting
+    pomodoro.inicio = Date.now(); // Set the start time.
+    await pomodoro.save();
+    res.json({ message: 'Pomodoro iniciado', estado: pomodoro.estado });
+  } catch (error) {
+    console.error('Error al iniciar pomodoro:', error);
+    res.status(500).json({ message: error.message || 'Error del servidor' });
+  }
+});
+
+
+router.put('/:id/cancelar', authenticateToken, async (req, res) => {
+  try {
+    const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+
+    if (!pomodoro) {
+      return res.status(404).json({ message: 'Pomodoro no encontrado' });
+    }
+
+    pomodoro.estado = 'finalizado'; 
+
+    await pomodoro.save();
+    res.json({ message: 'Pomodoro cancelado' });
+
+  } catch (error) {
+    console.error('Error al cancelar pomodoro:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+});
 
 module.exports = router;

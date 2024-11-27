@@ -5,6 +5,7 @@ import Registro from './components/Registro';
 import Login from './components/Login';
 import Habitos from './components/Habitos';
 import HabitoDetalle from './components/HabitoDetalle';
+import Pomodoro from './components/Pomodoro';
 
 function App() {
    const isLoggedIn = !!localStorage.getItem('token');
@@ -24,6 +25,7 @@ function App() {
             element={isLoggedIn ? <HabitoDetalle /> : <Navigate to="/login" />}
           />
           <Route path="*" element={<Navigate to={isLoggedIn ? '/habitos' : '/registro'} />} />
+          <Route path="/pomodoro" element={<Pomodoro />} />
         </Routes>
       </div>
     </BrowserRouter>
