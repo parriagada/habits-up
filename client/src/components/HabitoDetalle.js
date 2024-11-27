@@ -93,7 +93,7 @@ function HabitoDetalle() {
 
         <div className="bonsai-spritesheet" 
         style={{ 
-            backgroundPositionX: `calc(${-(habito.nivelCumplimiento - 1)} * 160px * var(--pixel-size))`,
+            backgroundPositionX: `calc(${-(habito.nivelCumplimiento)} * 160px * var(--pixel-size))`,
           }} alt={habito.nombre}   >
 
         </div>

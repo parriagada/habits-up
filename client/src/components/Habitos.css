@@ -133,11 +133,11 @@ button:active {
 
 .bonsai-spritesheet {
 
-  width: calc(160px * 10 * var(--pixel-size));
+  width: calc(160px * 11 * var(--pixel-size));
   height: calc(160px * var(--pixel-size));
   image-rendering: pixelated;
   /* background-image: url(../images/bonsai160x160.png);  Set the sprite sheet as the background */
-  background-image: url(../../public/images/bonsai160x160.png);  /*Set the sprite sheet as the background */
+  background-image: url(../../public/images/bonsai\ nivel\ 0-10\ 160x160.png);  /*Set the sprite sheet as the background */
   background-repeat: no-repeat; /* Prevent the background image from repeating */
   background-size: 100%;
   /* background-color: aquamarine; */
