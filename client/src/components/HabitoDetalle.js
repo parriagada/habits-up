@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './Habitos.css';
-
+import CalendarHeatmap from 'react-calendar-heatmap';
 
 function HabitoDetalle() {
   const { habitoId } = useParams();
@@ -29,6 +29,7 @@ function HabitoDetalle() {
       if (response.ok) {
         const data = await response.json();
         setHabito({...habito, ...data}); // Update the existing habit state
+        console.log(habito.cumplimiento[0])
       } else {
         const errorData = await response.json();
         console.error("Error al marcar el hábito como cumplido:", errorData.message);
@@ -38,6 +39,27 @@ function HabitoDetalle() {
       console.error("Error al marcar el hábito como cumplido:", error);
       // Consider adding error handling/display to the user
     }
+  };
+
+  const transformarFechas = (cumplimiento) => {
+    // console.log("Datos de cumplimiento:", cumplimiento);
+  
+    const fechasTransformadas = cumplimiento
+      .filter(item => item.completado)
+      .map(item => {
+        // Verifica si item.fecha ya es un objeto Date
+        const fecha = item.fecha instanceof Date ? item.fecha : new Date(item.fecha); 
+        // console.log("Fecha original:", item.fecha);  // Muestra la fecha original (string)
+        // console.log("Fecha como objeto Date:", fecha); // Muestra el objeto Date
+        // console.log("Fecha formateada:", fecha.toISOString().split('T')[0]); // Muestra la fecha formateada
+        return {
+          date: fecha.toISOString().split('T')[0],
+          count: 1
+        };
+      });
+  
+    // console.log("Fechas transformadas:", fechasTransformadas);
+    return fechasTransformadas;
   };
 
   useEffect(() => {
@@ -98,6 +120,9 @@ function HabitoDetalle() {
 
         </div>
       </div>
+
+      
+
       <p className="nivel-habito">Nivel: {habito.nivelCumplimiento} / 10</p> 
       <p>{habito.descripcion}</p>
 
@@ -111,6 +136,27 @@ function HabitoDetalle() {
           <p>Hora: {habito.recordatorio.hora}</p>
         </div>
       )}
+      
+      
+      
+      <h3>Historial de Cumplimiento</h3>
+      <div className="heatmap-container">
+        
+
+        <CalendarHeatmap
+        startDate={new Date('2024-01-01')} 
+        endDate={new Date('2024-12-31')}  
+        values={transformarFechas(habito.cumplimiento)} 
+        classForValue={(value) => {
+          return value ? 'color-filled' : 'color-empty'; 
+        }}
+        showWeekdayLabels={true}
+        weekdayLabels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']}
+        monthLabels={['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']}
+      />
+      </div>
+      
+
       <button className="boton-crear">
         <a href="/habitos" style={{ textDecoration: 'none', color: 'inherit' }}>Volver a Hábitos</a>
       </button>

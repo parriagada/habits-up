@@ -145,10 +145,32 @@ button:active {
 }
 
 
+/* Habitos.css */
+
+.react-calendar-heatmap .color-empty { /* Para los días sin cumplir */
+  fill: #ebebeb; /* Gris claro */
+}
+
+.react-calendar-heatmap .color-filled { /* Para los días cumplidos */
+  fill: #4caf50; /* Verde */
+}
+.react-calendar-heatmap {
+  width: 1000px;
+  font-size: 10px ;
+  
+}
+
+.heatmap-container{
+  width: 100%; /* O un valor fijo en píxeles */
+  overflow-x: auto;
+  scroll-snap-align: end
+}
+
 @media screen and (min-width: 768px) {
   :root {
     --pixel-size: 3;
   }
+  
 }
 
 @keyframes moveSpritesheet {
@@ -160,3 +182,5 @@ button:active {
   }
   
 }
+
+
