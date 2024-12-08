@@ -33,7 +33,7 @@ function HabitoDetalle() {
       if (response.ok) {
         const data = await response.json();
         setHabito({ ...habito, ...data }); // Update the existing habit state
-        console.log(habito.cumplimiento[0]);
+        // console.log(habito.cumplimiento[0]);
       } else {
         const errorData = await response.json();
         console.error(
@@ -48,7 +48,7 @@ function HabitoDetalle() {
     }
   };
 
-  const getTooltipDataAttrs = (value) => {
+  const getDataTooltip = (value) => {
     // Temporary hack around null value.date issue
     if (!value || !value.date) {
       return null;
@@ -129,7 +129,7 @@ function HabitoDetalle() {
     };
 
     fetchHabitoDetalle();
-  }, [habitoId]);
+  }, [habitoId, habito?.cumplimiento]);
 
   if (isLoading) {
     return <div>Cargando detalles del hábito...</div>;
@@ -139,7 +139,7 @@ function HabitoDetalle() {
     return <div>Error: {error}</div>;
   }
 
-  const formatDaysOfWeek = (daysArray) => {
+  const formatearDiasDeSemana = (daysArray) => {
     const diasSemana = [
       "Lunes",
       "Martes",
@@ -173,7 +173,7 @@ function HabitoDetalle() {
           <h3 className="subtitulo">Recordatorio</h3>
           <p>Tipo: {habito.recordatorio.tipo}</p>
           {habito.recordatorio.tipo === "semanal" && (
-            <p>Días: {formatDaysOfWeek(habito.recordatorio.dias)}</p>
+            <p>Días: {formatearDiasDeSemana(habito.recordatorio.dias)}</p>
           )}
           <p>Hora: {habito.recordatorio.hora}</p>
         </div>
@@ -204,7 +204,7 @@ function HabitoDetalle() {
             "Nov",
             "Dic",
           ]}
-          tooltipDataAttrs={getTooltipDataAttrs}
+          tooltipDataAttrs={getDataTooltip}
         />
         <Tooltip anchorSelect=".color-filled, .color-empty" place="top">
           {/* mostrar fecha que se selecciona*/}
