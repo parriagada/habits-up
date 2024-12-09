@@ -9,6 +9,7 @@ function HabitoDetalle() {
   const [habito, setHabito] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [añoActual, setAñoActual] = useState(new Date().getFullYear());
 
   const marcarComoCumplido = async () => {
     try {
@@ -93,6 +94,23 @@ function HabitoDetalle() {
     return fechasTransformadas;
   };
 
+  const cambiarAño = (incremento) => {
+    setAñoActual(añoActual + incremento);
+  };
+
+  const formatearDiasDeSemana = (daysArray) => {
+    const diasSemana = [
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo",
+    ];
+    return daysArray.map((dayIndex) => diasSemana[dayIndex]).join(", ");
+  };
+
   useEffect(() => {
     const fetchHabitoDetalle = async () => {
       try {
@@ -139,19 +157,6 @@ function HabitoDetalle() {
     return <div>Error: {error}</div>;
   }
 
-  const formatearDiasDeSemana = (daysArray) => {
-    const diasSemana = [
-      "Lunes",
-      "Martes",
-      "Miércoles",
-      "Jueves",
-      "Viernes",
-      "Sábado",
-      "Domingo",
-    ];
-    return daysArray.map((dayIndex) => diasSemana[dayIndex]).join(", ");
-  };
-
   return (
     <div className="contenedor">
       <h2 className="titulo">{habito.nombre}</h2>
@@ -180,10 +185,17 @@ function HabitoDetalle() {
       )}
 
       <h3>Historial de Cumplimiento</h3>
+
+      <div className="flechas-año">
+        <button onClick={() => cambiarAño(-1)}>{"<"}</button>
+        <span>{añoActual}</span>
+        <button onClick={() => cambiarAño(1)}>{">"}</button>
+      </div>
+
       <div className="heatmap-container">
         <CalendarHeatmap
-          startDate={new Date("2024-01-01")}
-          endDate={new Date("2024-12-31")}
+          startDate={new Date(añoActual, 0, -1)}
+          endDate={new Date(añoActual, 11, 30)}
           values={transformarFechas(habito.cumplimiento)}
           classForValue={(value) => {
             return value ? "color-filled" : "color-empty";
