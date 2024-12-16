@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import "./Habitos.css";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { Tooltip } from "react-tooltip";
+import html2canvas from "html2canvas";
 
 function HabitoDetalle() {
   const { habitoId } = useParams();
@@ -10,6 +11,26 @@ function HabitoDetalle() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [añoActual, setAñoActual] = useState(new Date().getFullYear());
+
+  const tomarScreenshot = (
+    elementId,
+    fileName,
+    fileType,
+    backgroundColor = "black"
+  ) => {
+    html2canvas(document.getElementById(elementId), { backgroundColor })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL(fileType);
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = fileName;
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Error al tomar la captura de pantalla:", error);
+        alert("Error al tomar la captura de pantalla.");
+      });
+  };
 
   const marcarComoCumplido = async () => {
     try {
@@ -158,7 +179,7 @@ function HabitoDetalle() {
   }
 
   return (
-    <div className="contenedor">
+    <div id="captura-habito" className="contenedor">
       <h2 className="titulo">{habito.nombre}</h2>
       <div className="imagen-habito">
         <div
@@ -229,6 +250,9 @@ function HabitoDetalle() {
         </a>
       </button>
       <button onClick={() => marcarComoCumplido(habito._id)}>Cumplido</button>
+      <button onClick={() => tomarScreenshot('captura-habito', `${habito.nombre}-${new Date().toISOString()}.png`, 'image/png', 'white')}>
+        Descargar captura
+      </button>
     </div>
   );
 }
