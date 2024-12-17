@@ -12,25 +12,78 @@ function HabitoDetalle() {
   const [error, setError] = useState(null);
   const [añoActual, setAñoActual] = useState(new Date().getFullYear());
 
-  const tomarScreenshot = (
-    elementId,
-    fileName,
-    fileType,
-    backgroundColor = "black"
-  ) => {
-    html2canvas(document.getElementById(elementId), { backgroundColor })
-      .then((canvas) => {
-        const imgData = canvas.toDataURL(fileType);
-        const link = document.createElement("a");
-        link.href = imgData;
-        link.download = fileName;
-        link.click();
-      })
-      .catch((error) => {
-        console.error("Error al tomar la captura de pantalla:", error);
-        alert("Error al tomar la captura de pantalla.");
-      });
+  // const tomarScreenshot = (
+  //   elementId,
+  //   fileName,
+  //   fileType,
+  //   backgroundColor = "black"
+  // ) => {
+  //   html2canvas(document.getElementById(elementId), { backgroundColor })
+  //     .then((canvas) => {
+  //       const imgData = canvas.toDataURL(fileType);
+  //       const link = document.createElement("a");
+  //       link.href = imgData;
+  //       link.download = fileName;
+  //       link.click();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error al tomar la captura de pantalla:", error);
+  //       alert("Error al tomar la captura de pantalla.");
+  //     });
+  // };
+
+  
+
+  const tomarScreenshot = async () => {
+    try {
+      // Crear un nuevo elemento div que contenga los elementos a capturar
+      const capturaDiv = document.createElement("div");
+      capturaDiv.className = "captura-contenido"; // Agregar una clase para estilos personalizados
+
+      // Agregar los elementos clave al nuevo div
+      const titulo = document.querySelector(".titulo");
+      const imagenHabito = document.querySelector(".imagen-habito");
+      const nivelHabito = document.querySelector(".nivel-habito");
+      const calendario = document.querySelector(".heatmap-container");
+
+      capturaDiv.appendChild(titulo.cloneNode(true));
+      capturaDiv.appendChild(imagenHabito.cloneNode(true));
+      capturaDiv.appendChild(nivelHabito.cloneNode(true));
+      // capturaDiv.appendChild(calendario.cloneNode(true));
+
+      
+
+      capturaDiv.style.position = "absolute";
+      capturaDiv.style.top = "-9999px";
+
+      // Agregar un elemento con el mensaje personalizado
+      const mensaje = document.createElement("p");
+      mensaje.textContent = `Haz cumplido ${habito.consecutivos} días con tu hábito`;
+      capturaDiv.appendChild(mensaje);
+
+      
+
+      // Agregar el nuevo div al DOM
+      document.body.appendChild(capturaDiv);
+
+      // Tomar la captura de pantalla del nuevo div
+      await html2canvas(capturaDiv, { backgroundColor: "white" }).then(
+        (canvas) => {
+          document.body.removeChild(capturaDiv); // Eliminar el div temporal
+          const link = document.createElement("a");
+          link.download = `${habito.nombre}-${new Date().toISOString()}.png`; // Nombre del archivo
+          link.href = canvas.toDataURL("image/png"); // Convertir el canvas a una URL de datos
+          link.click();
+        }
+      );
+    } catch (error) {
+      console.error("Error al tomar la captura de pantalla:", error);
+      // Mostrar un mensaje de error al usuario
+    }
+    
   };
+
+  
 
   const marcarComoCumplido = async () => {
     try {
@@ -250,7 +303,16 @@ function HabitoDetalle() {
         </a>
       </button>
       <button onClick={() => marcarComoCumplido(habito._id)}>Cumplido</button>
-      <button onClick={() => tomarScreenshot('captura-habito', `${habito.nombre}-${new Date().toISOString()}.png`, 'image/png', 'white')}>
+      <button
+        onClick={() =>
+          tomarScreenshot(
+            "captura-habito",
+            `${habito.nombre}-${new Date().toISOString()}.png`,
+            "image/png",
+            "white"
+          )
+        }
+      >
         Descargar captura
       </button>
     </div>
