@@ -30,41 +30,88 @@ router.post('/', authenticateToken, async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
-
 router.put('/:id/iniciar', authenticateToken, async (req, res) => {
   try {
-    const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
-    if (!pomodoro) {
-      return res.status(404).json({ message: 'Pomodoro no encontrado' });
-    }
+      const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+      if (!pomodoro) {
+          return res.status(404).json({ message: 'Pomodoro no encontrado' });
+      }
 
-    pomodoro.estado = 'concentracion';  // Set to 'concentracion' when starting
-    pomodoro.inicio = Date.now(); // Set the start time.
-    await pomodoro.save();
-    res.json({ message: 'Pomodoro iniciado', estado: pomodoro.estado });
+      // Calcula el tiempo restante en segundos
+      const tiempoRestante = pomodoro.concentracion * 60 * 1000;
+
+      pomodoro.estado = 'concentracion';
+      pomodoro.inicio = Date.now();
+      pomodoro.tiempoRestante = tiempoRestante;
+      await pomodoro.save();
+
+      res.json({ message: 'Pomodoro iniciado', estado: pomodoro.estado, tiempoRestante });
   } catch (error) {
-    console.error('Error al iniciar pomodoro:', error);
-    res.status(500).json({ message: error.message || 'Error del servidor' });
+      console.error("Error al iniciar el pomodoro:", error);
+      res.status(500).json({ message: 'Error al iniciar el pomodoro' });
   }
 });
 
+router.put('/:id/pausar', authenticateToken, async (req, res) => {
+  try {
+      const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+      if (!pomodoro) {
+          return res.status(404).json({ message: 'Pomodoro no encontrado' });
+      }
+
+      if (pomodoro.estado !== 'concentracion' && pomodoro.estado !== 'descanso') {
+        return res.status(400).json({ message: 'El pomodoro no está en un estado que se pueda pausar' });
+      }
+
+      pomodoro.tiempoRestante = pomodoro.tiempoRestante - (Date.now() - pomodoro.inicio);
+      pomodoro.inicio = null; 
+      pomodoro.estado = 'pausado';
+      await pomodoro.save();
+
+      res.json({ message: 'Pomodoro pausado', estado: pomodoro.estado });
+  } catch (error) {
+      console.error("Error al pausar el pomodoro:", error);
+      res.status(500).json({ message: 'Error al pausar el pomodoro' });
+  }
+});
+
+router.put('/:id/reanudar', authenticateToken, async (req, res) => {
+  try {
+      const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+      if (!pomodoro) {
+          return res.status(404).json({ message: 'Pomodoro no encontrado' });
+      }
+
+      if (pomodoro.estado !== 'pausado') {
+          return res.status(400).json({ message: 'El pomodoro no está pausado' });
+      }
+
+      pomodoro.estado = 'concentracion'; 
+      pomodoro.inicio = Date.now(); 
+      await pomodoro.save();
+
+      res.json({ message: 'Pomodoro reanudado', estado: pomodoro.estado });
+  } catch (error) {
+      console.error("Error al reanudar el pomodoro:", error);
+      res.status(500).json({ message: 'Error al reanudar el pomodoro' });
+  }
+});
 
 router.put('/:id/cancelar', authenticateToken, async (req, res) => {
   try {
-    const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+      const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+      if (!pomodoro) {
+          return res.status(404).json({ message: 'Pomodoro no encontrado' });
+      }
+      pomodoro.tiempoRestante = pomodoro.tiempoRestante - (Date.now() - pomodoro.inicio); // Calculate remaining
+      pomodoro.estado = 'cancelado';
+      pomodoro.fin = Date.now();
+      await pomodoro.save();
 
-    if (!pomodoro) {
-      return res.status(404).json({ message: 'Pomodoro no encontrado' });
-    }
-
-    pomodoro.estado = 'finalizado'; 
-
-    await pomodoro.save();
-    res.json({ message: 'Pomodoro cancelado' });
-
+      res.json({ message: 'Pomodoro cancelado', estado: pomodoro.estado });
   } catch (error) {
-    console.error('Error al cancelar pomodoro:', error);
-    res.status(500).json({ message: 'Error del servidor' });
+      console.error("Error al cancelar el pomodoro:", error);
+      res.status(500).json({ message: 'Error al cancelar el pomodoro' });
   }
 });
 
