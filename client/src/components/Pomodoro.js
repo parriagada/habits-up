@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Habitos.css';
+import './Pomodoro.css';
 
 
 function Pomodoro() {
@@ -203,14 +203,84 @@ function Pomodoro() {
 
 
   return (
-    <div>
+    <div className="pomodoro-container">
       <h1>Pomodoro</h1>
-      <div>{formatTiempo(tiempoRestante)}</div>
-      <button onClick={iniciarPomodoro} disabled={estado !== 'pausado'}>Iniciar</button>
-      <button onClick={pausarPomodoro} disabled={estado === 'pausado'}>Pausar</button> 
-      <button onClick={reanudarPomodoro} disabled={estado !== 'pausado'}>Reanudar</button> 
-      <button onClick={cancelarPomodoro} disabled={estado === 'pausado'}>Cancelar</button>
 
+      {/* Campos para ingresar los datos */}
+      <div className="input-group">
+        <label htmlFor="concentracion">Concentración (minutos):</label>
+        <input
+          type="number"
+          id="concentracion"
+          value={pomodoroData.concentracion}
+          onChange={(e) =>
+            setPomodoroData({
+              ...pomodoroData,
+              concentracion: parseInt(e.target.value),
+            })
+          }
+        />
+      </div>
+      <div className="input-group">
+        <label htmlFor="descanso">Descanso (minutos):</label>
+        <input
+          type="number"
+          id="descanso"
+          value={pomodoroData.descanso}
+          onChange={(e) =>
+            setPomodoroData({
+              ...pomodoroData,
+              descanso: parseInt(e.target.value),
+            })
+          }
+        />
+      </div>
+      <div className="input-group">
+        <label htmlFor="numDescansos">Número de descansos:</label>
+        <input
+          type="number"
+          id="numDescansos"
+          value={pomodoroData.numDescansos}
+          onChange={(e) =>
+            setPomodoroData({
+              ...pomodoroData,
+              numDescansos: parseInt(e.target.value),
+            })
+          }
+        />
+      </div>
+      <div className="input-group">
+        <label htmlFor="objetivo">Objetivo:</label>
+        <input
+          type="text"
+          id="objetivo"
+          value={pomodoroData.objetivo}
+          onChange={(e) =>
+            setPomodoroData({ ...pomodoroData, objetivo: e.target.value })
+          }
+        />
+      </div>
+
+      {/* Temporizador visual */}
+      <div className="temporizador">
+        <div className="tiempo-restante">{formatTiempo(tiempoRestante)}</div>
+      </div>
+
+      {/* Botones */}
+      <div className="botones">
+        <button onClick={iniciarPomodoro} disabled={estado !== "pausado"}>
+          Iniciar
+        </button>
+        <button onClick={pausarPomodoro} disabled={estado === "pausado"}>
+          Pausar
+        </button>
+        <button
+          onClick={cancelarPomodoro}
+          disabled={estado === "pausado" || estado === "finalizado"}
+        >
+          Cancelar
+        </button>
+      </div>
     </div>
   );
 }
