@@ -31,8 +31,24 @@ function HabitoDetalle() {
   //       alert("Error al tomar la captura de pantalla.");
   //     });
   // };
-
+  const calcularDiasCumplidos = (cumplimiento) => {
+    if (!cumplimiento || cumplimiento.length === 0) {
+      return 0;
+    }
   
+    const fechasUnicas = new Set();
+  
+    cumplimiento.forEach(item => {
+      if (item.completado) {
+        const fechaString = new Date(item.fecha).toISOString().split('T')[0];
+        fechasUnicas.add(fechaString);
+      }
+    });
+  
+    return fechasUnicas.size;
+  };
+
+  const diasCumplidos = habito ? calcularDiasCumplidos(habito.cumplimiento) : 0;
 
   const tomarScreenshot = async () => {
     try {
@@ -45,23 +61,22 @@ function HabitoDetalle() {
       const imagenHabito = document.querySelector(".imagen-habito");
       const nivelHabito = document.querySelector(".nivel-habito");
       const calendario = document.querySelector(".heatmap-container");
+      const totalDias = document.querySelector(".total-dias-cumplidos");
 
       capturaDiv.appendChild(titulo.cloneNode(true));
       capturaDiv.appendChild(imagenHabito.cloneNode(true));
       capturaDiv.appendChild(nivelHabito.cloneNode(true));
       // capturaDiv.appendChild(calendario.cloneNode(true));
+      capturaDiv.appendChild(totalDias.cloneNode(true));
 
-      
 
       capturaDiv.style.position = "absolute";
       capturaDiv.style.top = "-9999px";
 
       // Agregar un elemento con el mensaje personalizado
-      const mensaje = document.createElement("p");
-      mensaje.textContent = `Haz cumplido ${habito.consecutivos} días con tu hábito`;
-      capturaDiv.appendChild(mensaje);
-
-      
+      // const mensaje = document.createElement("p");
+      // mensaje.textContent = `Haz cumplido ${habito.consecutivos} días con tu hábito`;
+      // capturaDiv.appendChild(mensaje);
 
       // Agregar el nuevo div al DOM
       document.body.appendChild(capturaDiv);
@@ -80,10 +95,7 @@ function HabitoDetalle() {
       console.error("Error al tomar la captura de pantalla:", error);
       // Mostrar un mensaje de error al usuario
     }
-    
   };
-
-  
 
   const marcarComoCumplido = async () => {
     try {
@@ -246,6 +258,8 @@ function HabitoDetalle() {
 
       <p className="nivel-habito">Nivel: {habito.nivelCumplimiento} / 10</p>
       <p>{habito.descripcion}</p>
+
+      <p className="total-dias-cumplidos">Total de días cumplidos: {diasCumplidos}</p> {/* Nuevo párrafo */}
 
       {habito.recordatorio && (
         <div>
