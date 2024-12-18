@@ -4,6 +4,12 @@ import "./Habitos.css";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { Tooltip } from "react-tooltip";
 import html2canvas from "html2canvas";
+import {
+  transformarFechas,
+  formatearDiasDeSemana,
+  calcularDiasCumplidos,
+  getDataTooltip
+} from "../utils/fechaUtils";
 
 function HabitoDetalle() {
   const { habitoId } = useParams();
@@ -12,42 +18,6 @@ function HabitoDetalle() {
   const [error, setError] = useState(null);
   const [añoActual, setAñoActual] = useState(new Date().getFullYear());
 
-  // const tomarScreenshot = (
-  //   elementId,
-  //   fileName,
-  //   fileType,
-  //   backgroundColor = "black"
-  // ) => {
-  //   html2canvas(document.getElementById(elementId), { backgroundColor })
-  //     .then((canvas) => {
-  //       const imgData = canvas.toDataURL(fileType);
-  //       const link = document.createElement("a");
-  //       link.href = imgData;
-  //       link.download = fileName;
-  //       link.click();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error al tomar la captura de pantalla:", error);
-  //       alert("Error al tomar la captura de pantalla.");
-  //     });
-  // };
-  const calcularDiasCumplidos = (cumplimiento) => {
-    if (!cumplimiento || cumplimiento.length === 0) {
-      return 0;
-    }
-  
-    const fechasUnicas = new Set();
-  
-    cumplimiento.forEach(item => {
-      if (item.completado) {
-        const fechaString = new Date(item.fecha).toISOString().split('T')[0];
-        fechasUnicas.add(fechaString);
-      }
-    });
-  
-    return fechasUnicas.size;
-  };
-
   const diasCumplidos = habito ? calcularDiasCumplidos(habito.cumplimiento) : 0;
 
   const tomarScreenshot = async () => {
@@ -55,28 +25,13 @@ function HabitoDetalle() {
       // Crear un nuevo elemento div que contenga los elementos a capturar
       const capturaDiv = document.createElement("div");
       capturaDiv.className = "captura-contenido"; // Agregar una clase para estilos personalizados
-
-      // Agregar los elementos clave al nuevo div
-      const titulo = document.querySelector(".titulo");
-      const imagenHabito = document.querySelector(".imagen-habito");
-      const nivelHabito = document.querySelector(".nivel-habito");
-      const calendario = document.querySelector(".heatmap-container");
-      const totalDias = document.querySelector(".total-dias-cumplidos");
-
-      capturaDiv.appendChild(titulo.cloneNode(true));
-      capturaDiv.appendChild(imagenHabito.cloneNode(true));
-      capturaDiv.appendChild(nivelHabito.cloneNode(true));
-      // capturaDiv.appendChild(calendario.cloneNode(true));
-      capturaDiv.appendChild(totalDias.cloneNode(true));
-
-
       capturaDiv.style.position = "absolute";
       capturaDiv.style.top = "-9999px";
 
-      // Agregar un elemento con el mensaje personalizado
-      // const mensaje = document.createElement("p");
-      // mensaje.textContent = `Haz cumplido ${habito.consecutivos} días con tu hábito`;
-      // capturaDiv.appendChild(mensaje);
+      const elementosAClonar = document.querySelectorAll(".titulo, .imagen-habito, .nivel-habito, .total-dias-cumplidos");
+            elementosAClonar.forEach(elemento => {
+                capturaDiv.appendChild(elemento.cloneNode(true));
+            });
 
       // Agregar el nuevo div al DOM
       document.body.appendChild(capturaDiv);
@@ -96,7 +51,6 @@ function HabitoDetalle() {
       // Mostrar un mensaje de error al usuario
     }
   };
-
   const marcarComoCumplido = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -134,67 +88,8 @@ function HabitoDetalle() {
       // Consider adding error handling/display to the user
     }
   };
-
-  const getDataTooltip = (value) => {
-    // Temporary hack around null value.date issue
-    if (!value || !value.date) {
-      return null;
-    }
-
-    let fechaFormateada = "Sin fecha seleccionada"; // Mensaje por defecto
-
-    if (value && value.date) {
-      const fecha =
-        typeof value.date === "string" ? new Date(value.date) : value.date;
-
-      //Ajusta la fecha para que se muestre correctamente en el tooltip
-      fecha.setDate(fecha.getDate() + 1);
-      fechaFormateada = fecha.toLocaleDateString("es-ES");
-    }
-    // Configuration for react-tooltip
-    return {
-      "data-tooltip-id": `calendar-tooltip`,
-      "data-tooltip-content": `Fecha de cumplimiento: ${fechaFormateada}`,
-    };
-  };
-
-  const transformarFechas = (cumplimiento) => {
-    // console.log("Datos de cumplimiento:", cumplimiento);
-
-    const fechasTransformadas = cumplimiento
-      .filter((item) => item.completado)
-      .map((item) => {
-        // Verifica si item.fecha ya es un objeto Date
-        const fecha =
-          item.fecha instanceof Date ? item.fecha : new Date(item.fecha);
-        // console.log("Fecha original:", item.fecha);  // Muestra la fecha original (string)
-        // console.log("Fecha como objeto Date:", fecha); // Muestra el objeto Date
-        //  console.log("Fecha formateada:", fecha.toISOString().split('T')[0]); // Muestra la fecha formateada
-        return {
-          date: fecha.toISOString().split("T")[0],
-          count: 1,
-        };
-      });
-
-    //  console.log("Fechas transformadas:", fechasTransformadas);
-    return fechasTransformadas;
-  };
-
   const cambiarAño = (incremento) => {
     setAñoActual(añoActual + incremento);
-  };
-
-  const formatearDiasDeSemana = (daysArray) => {
-    const diasSemana = [
-      "Lunes",
-      "Martes",
-      "Miércoles",
-      "Jueves",
-      "Viernes",
-      "Sábado",
-      "Domingo",
-    ];
-    return daysArray.map((dayIndex) => diasSemana[dayIndex]).join(", ");
   };
 
   useEffect(() => {
@@ -255,12 +150,12 @@ function HabitoDetalle() {
           alt={habito.nombre}
         ></div>
       </div>
-
       <p className="nivel-habito">Nivel: {habito.nivelCumplimiento} / 10</p>
       <p>{habito.descripcion}</p>
-
-      <p className="total-dias-cumplidos">Total de días cumplidos: {diasCumplidos}</p> {/* Nuevo párrafo */}
-
+      <p className="total-dias-cumplidos">
+        Total de días cumplidos: {diasCumplidos}
+      </p>{" "}
+      {/* Nuevo párrafo */}
       {habito.recordatorio && (
         <div>
           <h3 className="subtitulo">Recordatorio</h3>
@@ -271,20 +166,17 @@ function HabitoDetalle() {
           <p>Hora: {habito.recordatorio.hora}</p>
         </div>
       )}
-
       <h3>Historial de Cumplimiento</h3>
-
       <div className="flechas-año">
         <button onClick={() => cambiarAño(-1)}>{"<"}</button>
         <span>{añoActual}</span>
         <button onClick={() => cambiarAño(1)}>{">"}</button>
       </div>
-
       <div className="heatmap-container">
         <CalendarHeatmap
           startDate={new Date(añoActual, 0, -1)}
           endDate={new Date(añoActual, 11, 30)}
-          values={transformarFechas(habito.cumplimiento)}
+          values={transformarFechas(habito?.cumplimiento || [])}
           classForValue={(value) => {
             return value ? "color-filled" : "color-empty";
           }}
@@ -310,7 +202,6 @@ function HabitoDetalle() {
           {/* mostrar fecha que se selecciona*/}
         </Tooltip>
       </div>
-
       <button className="boton-crear">
         <a href="/habitos" style={{ textDecoration: "none", color: "inherit" }}>
           Volver a Hábitos
