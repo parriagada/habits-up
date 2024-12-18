@@ -68,7 +68,12 @@ function Login() {
 
             required
           />
-        </div>   
+        </div>
+        
+        <div>
+          ¿No tienes una cuenta? <a href="/registro">Regístrate aquí</a>
+        </div>
+        
 
         <button type="submit">Iniciar Sesión</button>
       </form>

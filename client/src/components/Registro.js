@@ -114,6 +114,9 @@ function Registro() {
             </p>
           ))}
         </div>
+        <div>
+          ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
+        </div>
         <button type="submit">Registrarse</button>
       </form>
     </div>
