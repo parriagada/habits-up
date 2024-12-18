@@ -14,6 +14,8 @@ function Habitos() {
     },
   });
 
+  const [mostrarPopupNotificaciones, setMostrarPopupNotificaciones] = useState(false);
+
   const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
   const [editandoHabito, setEditandoHabito] = useState(null);
@@ -46,7 +48,29 @@ function Habitos() {
     };
 
     obtenerHabitos();
+
+    const verificarPermisosNotificaciones = async () => {
+      if (!("Notification" in window)) {
+        // El navegador no soporta notificaciones
+        return;
+      }
+
+      const permiso = await Notification.requestPermission();
+      if (permiso !== "granted") {
+        setMostrarPopupNotificaciones(true);
+      }
+    };
+
+    verificarPermisosNotificaciones();
   }, []);
+
+  const solicitarPermisoNotificaciones = async () => {
+    const permiso = await Notification.requestPermission();
+    if (permiso === "granted") {
+      setMostrarPopupNotificaciones(false);
+    }
+    //Si el usuario deniega el permiso se mantiene el popup
+  };
 
   const agregarHabito = async () => {
     try {
@@ -54,6 +78,9 @@ function Habitos() {
       if (!token) {
         console.error("No hay token de autenticación.");
         return;
+      }
+      if(Notification.permission !== "granted"){
+        alert("Recuerda activar las notificaciones para recibir recordatorios.")
       }
 
       const response = await fetch("http://localhost:5000/habitos", {
@@ -242,6 +269,16 @@ function Habitos() {
 
   return (
     <div className="contenedor">
+      {mostrarPopupNotificaciones && (
+        <div className="popup-notificaciones">
+          <div className="popup-contenido">
+            <h3>¿Quieres recibir recordatorios de tus hábitos?</h3>
+            <p>Activa las notificaciones para no olvidar tus tareas.</p>
+            <button onClick={solicitarPermisoNotificaciones}>Activar Notificaciones</button>
+            <button onClick={() => setMostrarPopupNotificaciones(false)}>Cancelar</button>
+          </div>
+        </div>
+      )}
       <h2 className="titulo">Mis Hábitos</h2>
       <ul>
         {habitos.map((habito) => (
