@@ -6,7 +6,7 @@ function Registro() {
   const [correoElectronico, setCorreoElectronico] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [erroresContrasena, setErroresContrasena] = useState({});
-
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -15,7 +15,7 @@ function Registro() {
 
     if (Object.keys(errores).length === 0) {
       try {
-        const response = await fetch('http://localhost:5000/usuarios/registrar', {
+        const response = await fetch(`${BASE_URL}/usuarios/registrar`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -17,6 +17,7 @@ function HabitoDetalle() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [añoActual, setAñoActual] = useState(new Date().getFullYear());
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
   const diasCumplidos = habito ? calcularDiasCumplidos(habito.cumplimiento) : 0;
 
@@ -60,7 +61,7 @@ function HabitoDetalle() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/habitos/${habitoId}/cumplido`,
+        `${BASE_URL}/habitos/${habitoId}/cumplido`,
         {
           method: "PUT",
           headers: {
@@ -103,7 +104,7 @@ function HabitoDetalle() {
         }
 
         const response = await fetch(
-          `http://localhost:5000/habitos/${habitoId}`,
+          `${BASE_URL}/habitos/${habitoId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

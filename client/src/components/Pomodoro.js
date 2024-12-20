@@ -11,7 +11,10 @@ function Pomodoro() {
     descanso: 5,      // Valor por defecto
     numDescansos: 4,   // Valor por defecto
     objetivo: ''       // Valor por defecto
-  });
+  }); 
+
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
+
 
   useEffect(() => {
     let nuevoIntervalo;
@@ -41,7 +44,7 @@ function Pomodoro() {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/pomodoro', {
+        const response = await fetch(`${BASE_URL}/pomodoro`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -62,7 +65,7 @@ function Pomodoro() {
 
         setEstado('concentracion');
 
-        const startResponse = await fetch(`http://localhost:5000/pomodoro/${currentPomodoroId}/iniciar`, { // Use currentPomodoroId
+        const startResponse = await fetch(`${BASE_URL}/pomodoro/${currentPomodoroId}/iniciar`, { // Use currentPomodoroId
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -103,7 +106,7 @@ function Pomodoro() {
             return;
         }
 
-        const response = await fetch(`http://localhost:5000/pomodoro/${currentPomodoroId}/cancelar`, {
+        const response = await fetch(`${BASE_URL}/pomodoro/${currentPomodoroId}/cancelar`, {
             method: 'PUT',
             headers: {
                 Authorization: `Bearer ${token}`,
