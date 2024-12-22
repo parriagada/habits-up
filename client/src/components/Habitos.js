@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import './Habitos.css';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import "./Habitos.css";
+import { Link } from "react-router-dom";
 
 function Habitos() {
   const [habitos, setHabitos] = useState([]);
@@ -13,12 +13,112 @@ function Habitos() {
       dias: [],
     },
   });
-  const BASE_URL = process.env.REACT_APP_BACKEND_URL
 
-  const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  const [mostrarPopupNotificaciones, setMostrarPopupNotificaciones] =
+    useState(false);
+  const diasSemana = [
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo",
+  ];
+
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
 
   const [editandoHabito, setEditandoHabito] = useState(null);
 
+  const notificacionesProgramadas = useRef({});
+
+  const mostrarNotificacionDePrueba = () => {
+    if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("¡Prueba de Notificación!", {
+            body: "Esta es una notificación de prueba para tu hábito.",
+            // icon: "/ruta/a/tu/icono.png", // Reemplaza con la ruta real
+          });
+          console.log("Permiso concedido");
+        } else {
+          console.log("Permiso denegado");
+          alert(
+            "Permiso de notificaciones denegado. Por favor, habilítalas en la configuración del navegador."
+          ); // Mensaje más claro
+        }
+      });
+    } else {
+      alert(
+        "Por favor activa las notificaciones en la configuración de tu navegador para poder recibir notificaciones. Ya has denegado el permiso anteriormente."
+      ); // Mensaje más claro
+    }
+  };
+  // useEffect para obtener los hábitos al cargar el componente y solicitar permisos de notificación.
+  
+  const programarNotificacion = useCallback((habito) => {
+    if (!habito.recordatorio || !habito.recordatorio.hora) return;
+    
+    if (notificacionesProgramadas.current[habito._id]) {
+      clearTimeout(notificacionesProgramadas.current[habito._id]); // Limpiar la anterior
+    }
+    const [horas, minutos] = habito.recordatorio.hora.split(":").map(Number);
+    
+    const ahora = new Date();
+    let tiempoParaNotificacion;
+    
+    if (habito.recordatorio.tipo === "diario") {
+      tiempoParaNotificacion = new Date(
+        ahora.getFullYear(),
+        ahora.getMonth(),
+        ahora.getDate(),
+        horas,
+        minutos
+      );
+      if (tiempoParaNotificacion <= ahora) {
+        tiempoParaNotificacion.setDate(tiempoParaNotificacion.getDate() + 1); // Notificación para mañana
+      }
+    } else if (
+      habito.recordatorio.tipo === "semanal" &&
+      habito.recordatorio.dias &&
+      habito.recordatorio.dias.length > 0
+    ) {
+      const diaDeLaSemana = ahora.getDay(); // 0 (Domingo) - 6 (Sábado)
+      let proximoDia = habito.recordatorio.dias.find(
+        (dia) => dia >= diaDeLaSemana
+      );
+      if (proximoDia === undefined) {
+        proximoDia = habito.recordatorio.dias[0];
+      }
+      let diasDeDiferencia = proximoDia - diaDeLaSemana;
+      if (diasDeDiferencia < 0) {
+        diasDeDiferencia = 7 + diasDeDiferencia;
+      }
+      
+      tiempoParaNotificacion = new Date(
+        ahora.getFullYear(),
+        ahora.getMonth(),
+        ahora.getDate() + diasDeDiferencia,
+        horas,
+        minutos
+      );
+    } else {
+      return;
+    }
+    
+    
+    const tiempoEnMilisegundos =
+    tiempoParaNotificacion.getTime() - ahora.getTime();
+    
+    notificacionesProgramadas.current[habito._id] = setTimeout(() => {
+      new Notification(habito.nombre, { body: habito.descripcion });
+      // Reprogramar SOLO si el componente sigue montado.
+      if (notificacionesProgramadas.current[habito._id]) {
+        programarNotificacion(habito);
+      }
+    }, tiempoEnMilisegundos);
+  }, []);
+  
   useEffect(() => {
     const obtenerHabitos = async () => {
       try {
@@ -47,7 +147,52 @@ function Habitos() {
     };
 
     obtenerHabitos();
-  }, []);
+
+    
+
+    habitos.forEach((habito) => programarNotificacion(habito));
+  }, [habitos, programarNotificacion]);
+  
+  const solicitarPermisoNotificaciones = async () => {
+    setMostrarPopupNotificaciones(true);
+    //Si el usuario deniega el permiso se mantiene el popup
+  };
+
+  const verificarPermisosNotificaciones = async () => {
+    if (!("Notification" in window)) {
+      // El navegador no soporta notificaciones
+      return;
+    }
+
+    if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("¡Prueba de Notificación!", {
+            body: "Esta es una notificación de prueba para tu hábito.",
+            // icon: "/ruta/a/tu/icono.png", // Reemplaza con la ruta real
+          });
+          console.log("Permiso concedido");
+          setMostrarPopupNotificaciones(false);
+
+        } else {
+          console.log("Permiso denegado");
+          alert(
+            "Permiso de notificaciones denegado. Por favor, habilítalas en la configuración del navegador."
+            
+          ); // Mensaje más claro
+          setMostrarPopupNotificaciones(false);
+        }
+      });
+    }
+    // if (permiso !== "granted") {
+    //   setMostrarPopupNotificaciones(true);
+    // } else {
+    //   setMostrarPopupNotificaciones(false);
+    // }
+  };
+  Object.values(notificacionesProgramadas.current).forEach(clearTimeout);
+  notificacionesProgramadas.current = {};
+
 
   const agregarHabito = async () => {
     try {
@@ -55,6 +200,9 @@ function Habitos() {
       if (!token) {
         console.error("No hay token de autenticación.");
         return;
+      }
+      if (Notification.permission !== "granted") {
+        solicitarPermisoNotificaciones();
       }
 
       const response = await fetch(`${BASE_URL}/habitos`, {
@@ -124,10 +272,10 @@ function Habitos() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-  
+
     if (name.startsWith("recordatorio.")) {
       const campoRecordatorio = name.split(".")[1];
-  
+
       if (name === "recordatorio.dias" && type === "checkbox") {
         const diaSeleccionado = parseInt(value, 10);
         setNuevoHabito((prevHabito) => ({
@@ -136,9 +284,11 @@ function Habitos() {
             ...prevHabito.recordatorio,
             dias: checked
               ? [...prevHabito.recordatorio.dias, diaSeleccionado] // Agregar al array
-              : prevHabito.recordatorio.dias.filter((d) => d !== diaSeleccionado), // Eliminar del array
+              : prevHabito.recordatorio.dias.filter(
+                  (d) => d !== diaSeleccionado
+                ), // Eliminar del array
           },
-      }));
+        }));
       } else {
         // Manejo normal para tipo y hora
         setNuevoHabito((prevHabito) => ({
@@ -160,7 +310,7 @@ function Habitos() {
 
   const handleEditarClick = (habito) => {
     // Al hacer clic en editar, si el tipo es diario, limpia los días
-    if (habito.recordatorio.tipo === 'diario') {
+    if (habito.recordatorio.tipo === "diario") {
       habito.recordatorio.dias = [];
     }
     setEditandoHabito(habito);
@@ -174,6 +324,7 @@ function Habitos() {
         return;
       }
 
+
       const response = await fetch(`${BASE_URL}/habitos/${habitoId}/cumplido`, {
         method: 'PUT',
         headers: {
@@ -182,17 +333,22 @@ function Habitos() {
         },
         body: JSON.stringify({ cumplido: true }) // Envía el estado "cumplido"
       });
-  
+
       if (response.ok) {
         const data = await response.json(); // Obtén la respuesta del servidor
-  
+
         // Actualiza el estado en la interfaz de usuario
-        setHabitos(habitos.map(habito => 
-          habito._id === habitoId ? { ...habito, ...data } : habito 
-        ));
+        setHabitos(
+          habitos.map((habito) =>
+            habito._id === habitoId ? { ...habito, ...data } : habito
+          )
+        );
       } else {
         const errorData = await response.json();
-        console.error("Error al marcar el hábito como cumplido:", errorData.message);
+        console.error(
+          "Error al marcar el hábito como cumplido:",
+          errorData.message
+        );
       }
     } catch (error) {
       console.error("Error al marcar el hábito como cumplido:", error);
@@ -206,6 +362,7 @@ function Habitos() {
         console.error("No hay token de autenticación.");
         return;
       }
+
   
       console.log(`URL: ${BASE_URL}/habitos/editar/${id}`); // Verificar la URL
       console.log('Cuerpo:', JSON.stringify(editandoHabito)); // Verificar el cuerpo de la solicitud
@@ -219,20 +376,23 @@ function Habitos() {
         body: JSON.stringify(editandoHabito),
       });
   
+
       console.log(response); // Imprimir la respuesta completa
-  
+
       if (response.ok) {
         // ... código para actualizar la lista de hábitos ...
-        setHabitos(habitos.map(h => (h._id === id ? editandoHabito : h)));
+        setHabitos(habitos.map((h) => (h._id === id ? editandoHabito : h)));
         // Salir del modo de edición
-        setEditandoHabito(null);  
+        setEditandoHabito(null);
       } else {
         try {
           const data = await response.json();
           alert(data.message || "Error al actualizar el hábito");
         } catch (error) {
           console.error("Error al analizar la respuesta:", error);
-          alert("Error al actualizar el hábito. La respuesta del servidor no es válida.");
+          alert(
+            "Error al actualizar el hábito. La respuesta del servidor no es válida."
+          );
         }
       }
     } catch (error) {
@@ -243,6 +403,22 @@ function Habitos() {
 
   return (
     <div className="contenedor">
+      <button onClick={solicitarPermisoNotificaciones}>Probar Notificación</button>
+      {/* <button onClick={mostrarNotificacionDePrueba}>Probar Notificación</button> */}
+      {mostrarPopupNotificaciones && (
+        <div className="popup-notificaciones">
+          <div className="popup-contenido">
+            <h3>¿Quieres recibir recordatorios de tus hábitos?</h3>
+            <p>Activa las notificaciones para no olvidar tus tareas.</p>
+            <button onClick={verificarPermisosNotificaciones}>
+              Activar Notificaciones
+            </button>
+            <button onClick={() => setMostrarPopupNotificaciones(false)}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
       <h2 className="titulo">Mis Hábitos</h2>
       <ul>
         {habitos.map((habito) => (
@@ -286,7 +462,10 @@ function Habitos() {
                           ...prevHabito.recordatorio,
                           tipo: nuevoTipo,
                           // Limpiar días si se cambia a diario
-                          dias: nuevoTipo === 'diario' ? [] : prevHabito.recordatorio.dias,
+                          dias:
+                            nuevoTipo === "diario"
+                              ? []
+                              : prevHabito.recordatorio.dias,
                         },
                       }));
                     }}
@@ -306,16 +485,26 @@ function Habitos() {
                             type="checkbox"
                             name="recordatorio.dias"
                             value={index}
-                            checked={editandoHabito.recordatorio.dias.includes(index)}
+                            checked={editandoHabito.recordatorio.dias.includes(
+                              index
+                            )}
                             onChange={(e) => {
-                              const diaSeleccionado = parseInt(e.target.value, 10);
+                              const diaSeleccionado = parseInt(
+                                e.target.value,
+                                10
+                              );
                               setEditandoHabito((prevHabito) => ({
                                 ...prevHabito,
                                 recordatorio: {
                                   ...prevHabito.recordatorio,
                                   dias: e.target.checked
-                                    ? [...prevHabito.recordatorio.dias, diaSeleccionado]
-                                    : prevHabito.recordatorio.dias.filter((d) => d !== diaSeleccionado),
+                                    ? [
+                                        ...prevHabito.recordatorio.dias,
+                                        diaSeleccionado,
+                                      ]
+                                    : prevHabito.recordatorio.dias.filter(
+                                        (d) => d !== diaSeleccionado
+                                      ),
                                 },
                               }));
                             }}
@@ -325,7 +514,7 @@ function Habitos() {
                       ))}
                     </div>
                   </div>
-                )}            
+                )}
                 <input
                   type="time"
                   name="recordatorio.hora"
@@ -349,21 +538,22 @@ function Habitos() {
               </div>
             ) : (
               <div>
-                <h3 className="subtitulo" ><Link to={`/habitos/${habito._id}`}>{habito.nombre}</Link></h3>
+                <h3 className="subtitulo">
+                  <Link to={`/habitos/${habito._id}`}>{habito.nombre}</Link>
+                </h3>
                 <p>{habito.descripcion}</p>
                 <p>Nivel de cumplimiento: {habito.nivelCumplimiento} / 10</p>
                 {!editandoHabito && (
                   <div>
                     {habito.recordatorio && (
-                        <p>
+                      <p>
                         Recordatorio:{" "}
                         {habito.recordatorio.tipo === "semanal" &&
                           // Ordena los días antes de mostrarlos
                           habito.recordatorio.dias
                             .sort((a, b) => a - b) // Ordena numéricamente
                             .map((diaNumero) => diasSemana[diaNumero]) // Mapea al nombre del día
-                            .join(", ")
-                        }{" "}
+                            .join(", ")}{" "}
                         a las {habito.recordatorio.hora}
                       </p>
                     )}
@@ -420,13 +610,55 @@ function Habitos() {
           <div>
             <label htmlFor="diasRecordatorio">Días de la semana:</label>
             <div id="diasRecordatorio">
-              <input type="checkbox" name="recordatorio.dias" value="0" onChange={handleChange} /> Lunes
-              <input type="checkbox" name="recordatorio.dias" value="1" onChange={handleChange} /> Martes
-              <input type="checkbox" name="recordatorio.dias" value="2" onChange={handleChange} /> Miercoles
-              <input type="checkbox" name="recordatorio.dias" value="3" onChange={handleChange} /> Jueves
-              <input type="checkbox" name="recordatorio.dias" value="4" onChange={handleChange} /> Viernes
-              <input type="checkbox" name="recordatorio.dias" value="5" onChange={handleChange} /> Sábado
-              <input type="checkbox" name="recordatorio.dias" value="6" onChange={handleChange} /> Domingo
+              <input
+                type="checkbox"
+                name="recordatorio.dias"
+                value="0"
+                onChange={handleChange}
+              />{" "}
+              Lunes
+              <input
+                type="checkbox"
+                name="recordatorio.dias"
+                value="1"
+                onChange={handleChange}
+              />{" "}
+              Martes
+              <input
+                type="checkbox"
+                name="recordatorio.dias"
+                value="2"
+                onChange={handleChange}
+              />{" "}
+              Miercoles
+              <input
+                type="checkbox"
+                name="recordatorio.dias"
+                value="3"
+                onChange={handleChange}
+              />{" "}
+              Jueves
+              <input
+                type="checkbox"
+                name="recordatorio.dias"
+                value="4"
+                onChange={handleChange}
+              />{" "}
+              Viernes
+              <input
+                type="checkbox"
+                name="recordatorio.dias"
+                value="5"
+                onChange={handleChange}
+              />{" "}
+              Sábado
+              <input
+                type="checkbox"
+                name="recordatorio.dias"
+                value="6"
+                onChange={handleChange}
+              />{" "}
+              Domingo
             </div>
           </div>
         )}
@@ -441,8 +673,8 @@ function Habitos() {
           Agregar
         </button>
       </div>
-  </div>
-  )
+    </div>
+  );
 }
 
 export default Habitos;
