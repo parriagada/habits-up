@@ -7,6 +7,7 @@
   },
   "keywords": [],
   "author": "",
+  "proxy": "http://localhost:5000",
   "license": "ISC",
   "description": "",
   "dependencies": {

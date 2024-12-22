@@ -1,71 +1,56 @@
 const express = require('express');
 const router = express.Router();
 const Pomodoro = require('../models/Pomodoro');
-const { authenticateToken } = require('../middleware/authMiddleware'); // Asegúrate de tener este middleware
+const { authenticateToken } = require('../middleware/authMiddleware');
 
-// Obtener todos los pomodoros de un usuario
-router.get('/', authenticateToken, async (req, res) => {
-    try {
-        const pomodoros = await Pomodoro.find({ usuario: req.user.id });
-        res.json(pomodoros);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-// Crear un nuevo pomodoro
 router.post('/', authenticateToken, async (req, res) => {
-    const pomodoro = new Pomodoro({
-      concentracion: req.body.concentracion,
-      descanso: req.body.descanso,
-      numDescansos: req.body.numDescansos,
-      usuario: req.user.id, // usuario del token
-      objetivo: req.body.objetivo
-    });
-
     try {
-      const nuevoPomodoro = await pomodoro.save();
-      res.status(201).json(nuevoPomodoro);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
+        const nuevoPomodoro = new Pomodoro({
+            usuario: req.user.id,
+            duracionPomodoro: req.body.duracionPomodoro,
+            cantidadDescansos: req.body.cantidadDescansos,
+            duracionDescanso: req.body.duracionDescanso,
+            objetivo: req.body.objetivo
+        });
+        const pomodoroGuardado = await nuevoPomodoro.save();
+        res.status(201).json(pomodoroGuardado);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
     }
 });
 
-router.put('/:id/iniciar', authenticateToken, async (req, res) => {
-  try {
-    const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
-    if (!pomodoro) {
-      return res.status(404).json({ message: 'Pomodoro no encontrado' });
+// In routes/pomodoros.js
+router.get('/historial', authenticateToken, async (req, res) => {
+    try {
+      const historial = await Pomodoro.find({ usuario: req.user.id });
+      res.json(historial);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    pomodoro.estado = 'concentracion';  // Set to 'concentracion' when starting
-    pomodoro.inicio = Date.now(); // Set the start time.
-    await pomodoro.save();
-    res.json({ message: 'Pomodoro iniciado', estado: pomodoro.estado });
-  } catch (error) {
-    console.error('Error al iniciar pomodoro:', error);
-    res.status(500).json({ message: error.message || 'Error del servidor' });
-  }
-});
+  });
 
 
-router.put('/:id/cancelar', authenticateToken, async (req, res) => {
-  try {
-    const pomodoro = await Pomodoro.findOne({ _id: req.params.id, usuario: req.user.id });
+router.put('/:id', authenticateToken, async (req, res) => {
+    try {
+        const pomodoro = await Pomodoro.findById(req.params.id);
 
-    if (!pomodoro) {
-      return res.status(404).json({ message: 'Pomodoro no encontrado' });
+        if (!pomodoro) {
+            return res.status(404).json({ message: 'Pomodoro no encontrado' });
+        }
+
+        if (pomodoro.usuario.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'No tienes permiso para modificar este pomodoro' });
+        }
+
+        pomodoro.estado = req.body.estado;
+        pomodoro.tiempoFin = Date.now(); // Registrar tiempo de fin
+        pomodoro.tiempoTranscurrido = req.body.tiempoTranscurrido
+
+        await pomodoro.save();
+        res.json(pomodoro);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
-
-    pomodoro.estado = 'finalizado'; 
-
-    await pomodoro.save();
-    res.json({ message: 'Pomodoro cancelado' });
-
-  } catch (error) {
-    console.error('Error al cancelar pomodoro:', error);
-    res.status(500).json({ message: 'Error del servidor' });
-  }
 });
 
 module.exports = router;
