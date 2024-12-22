@@ -13,6 +13,7 @@ function Habitos() {
       dias: [],
     },
   });
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
 
   const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
@@ -27,7 +28,7 @@ function Habitos() {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/habitos", {
+        const response = await fetch(`${BASE_URL}/habitos`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -56,7 +57,7 @@ function Habitos() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/habitos", {
+      const response = await fetch(`${BASE_URL}/habitos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +104,7 @@ function Habitos() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/habitos/${id}`, {
+      const response = await fetch(`${BASE_URL}/habitos/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -173,7 +174,7 @@ function Habitos() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/habitos/${habitoId}/cumplido`, {
+      const response = await fetch(`${BASE_URL}/habitos/${habitoId}/cumplido`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -206,10 +207,10 @@ function Habitos() {
         return;
       }
   
-      console.log(`URL: http://localhost:5000/habitos/editar/${id}`); // Verificar la URL
+      console.log(`URL: ${BASE_URL}/habitos/editar/${id}`); // Verificar la URL
       console.log('Cuerpo:', JSON.stringify(editandoHabito)); // Verificar el cuerpo de la solicitud
   
-      const response = await fetch(`http://localhost:5000/habitos/editar/${id}`, { // Asegurarse de que la URL es correcta
+      const response = await fetch(`${BASE_URL}/habitos/editar/${id}`, { // Asegurarse de que la URL es correcta
         method: "PUT",
         headers: {
           "Content-Type": "application/json", // Encabezado Content-Type

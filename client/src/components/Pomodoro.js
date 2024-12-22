@@ -163,7 +163,7 @@ function Pomodoro() {
             alert("Ocurrió un error al cancelar el pomodoro.");
         }
     };
-
+      
     const finalizarPomodoro = async () => {
         setIsRunning(false);
         try {

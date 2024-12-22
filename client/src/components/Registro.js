@@ -6,7 +6,7 @@ function Registro() {
   const [correoElectronico, setCorreoElectronico] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [erroresContrasena, setErroresContrasena] = useState({});
-
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -15,7 +15,7 @@ function Registro() {
 
     if (Object.keys(errores).length === 0) {
       try {
-        const response = await fetch('http://localhost:5000/usuarios/registrar', {
+        const response = await fetch(`${BASE_URL}/usuarios/registrar`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -44,8 +44,8 @@ function Registro() {
     const errores = {};
 
     // Verifica la longitud
-    if (contrasena.length < 8) {
-      errores.longitud = 'La contraseña debe tener al menos 8 caracteres.';
+    if (contrasena.length < 12) {
+      errores.longitud = 'La contraseña debe tener al menos 12 caracteres.';
     }
 
     // Verifica que contenga al menos una letra mayúscula
@@ -113,6 +113,9 @@ function Registro() {
               {erroresContrasena[key]}
             </p>
           ))}
+        </div>
+        <div>
+          ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
         </div>
         <button type="submit">Registrarse</button>
       </form>

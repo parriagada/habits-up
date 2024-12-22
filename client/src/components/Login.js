@@ -5,12 +5,12 @@ import './Login.css';
 function Login() {
   const [correoElectronico, setCorreoElectronico] = useState('');
   const [contrasena, setContrasena] = useState('');
-
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/usuarios/login', { // Ajusta la ruta si es necesario
+      const response = await fetch(`${BASE_URL}/usuarios/login`, { // Ajusta la ruta si es necesario
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +68,12 @@ function Login() {
 
             required
           />
-        </div>   
+        </div>
+        
+        <div>
+          ¿No tienes una cuenta? <a href="/registro">Regístrate aquí</a>
+        </div>
+        
 
         <button type="submit">Iniciar Sesión</button>
       </form>
