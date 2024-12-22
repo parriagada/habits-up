@@ -13,6 +13,7 @@ function Pomodoro() {
     const [bonsaiFrame, setBonsaiFrame] = useState(0);
     const [pomodoroCompleted, setPomodoroCompleted] = useState(false);
     const [historialPomodoros, setHistorialPomodoros] = useState([]);
+    const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
     const presets = {
         "Test": { duracionPomodoro: 5, cantidadDescansos: 1, duracionDescansoTotal: 1 },
@@ -64,7 +65,7 @@ function Pomodoro() {
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            const response = await fetch("http://localhost:5000/pomodoros/historial", {
+            const response = await fetch(`${BASE_URL}/pomodoros/historial`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -99,7 +100,7 @@ function Pomodoro() {
             const token = localStorage.getItem("token");
             if (!token) return;
 
-            const response = await fetch("http://localhost:5000/pomodoros", {
+            const response = await fetch(`${BASE_URL}/pomodoros`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -137,7 +138,7 @@ function Pomodoro() {
         try {
             const token = localStorage.getItem("token");
             if (!token || !pomodoro) return;
-            const response = await fetch(`http://localhost:5000/pomodoros/${pomodoro._id}`, {
+            const response = await fetch(`${BASE_URL}/pomodoros/${pomodoro._id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -169,7 +170,7 @@ function Pomodoro() {
         try {
             const token = localStorage.getItem("token");
             if (!token || !pomodoro) return;
-            const response = await fetch(`http://localhost:5000/pomodoros/${pomodoro._id}`, {
+            const response = await fetch(`${BASE_URL}/pomodoros/${pomodoro._id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
