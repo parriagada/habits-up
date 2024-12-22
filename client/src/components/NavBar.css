@@ -1,98 +1,144 @@
-/* NavBar.css */
-
-/* Estilos base para mobile-first */
 .navbar {
-    background-color: #f2f9ea; 
-    padding: 10px 15px; 
-    display: flex;
-    justify-content: space-between; 
-    align-items: center; 
-  }
-  
-  .logo {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #28a745; 
-  }
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
 
-  @keyframes wobbly {
-    0% { transform: translateX(0%); }
-    15% { transform: translateX(-2.5%) rotate(-1deg); }
-    30% { transform: translateX(2%) rotate(1deg); }
-    45% { transform: translateX(-1.5%) rotate(-0.5deg); }
-    60% { transform: translateX(1%) rotate(0.5deg); }
-    75% { transform: translateX(-0.5%) rotate(-0.25deg); }
-    100% { transform: translateX(0%); }
-  }
-  
-  /* Aplica la animación al logo */
-  .logo:hover {
-    animation: wobbly 0.8s ease-in-out infinite;
-  }
+.nav-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Asegura que ocupe todo el ancho en mobile */
+}
 
-  .nav-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: none; 
-  }
-  
-  .nav-list li {
-    margin-bottom: 10px; 
-    background-color: transparent;
-  }
-  
-  /* Estilos de botón para los enlaces de la navbar */
-  .nav-list a {
-    text-decoration: none;
-    background-color: #28a745; /* Color de fondo del botón */
-    color: #fff; /* Color del texto del botón */
-    padding: 10px 15px; /* Espaciado interno del botón */
-    border: none; 
-    border-radius: 4px; 
-    cursor: pointer;
-    transition: all 0.3s ease; 
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
-  }
-  
-  .nav-list a:hover {
-    background-color: #218838; /* Color de fondo más oscuro al pasar el ratón */
-    transform: translateY(-2px); /* Mueve el botón ligeramente hacia arriba */
-    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); /* Aumenta la sombra en hover */
-  }
-  
-  .nav-list a:active {
-    transform: translateY(1px); /* Mueve el botón ligeramente hacia abajo al hacer clic */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Reduce la sombra al hacer clic */
-  }
-  
-  /* Icono de hamburguesa para el menú */
-  .menu-toggle {
-    cursor: pointer;
-    display: block; 
-  }
-  
+.logo {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #28a745;
+}
+
+@keyframes wobbly {
+  0% { transform: translateX(0%); }
+  15% { transform: translateX(-2.5%) rotate(-1deg); }
+  30% { transform: translateX(2%) rotate(1deg); }
+  45% { transform: translateX(-1.5%) rotate(-0.5deg); }
+  60% { transform: translateX(1%) rotate(0.5deg); }
+  75% { transform: translateX(-0.5%) rotate(-0.25deg); }
+  100% { transform: translateX(0%); }
+}
+
+/* Aplica la animación al logo */
+.logo:hover {
+  animation: wobbly 0.8s ease-in-out infinite;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none; /* Oculto por defecto en mobile */
+  width: 100%; /* Ocupa todo el ancho */
+  flex-direction: column; /* Apila los elementos verticalmente */
+  position: absolute;
+  top: 60px; /* Ajusta según la altura de la barra de navegación */
+  left: 0;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 10; /* Asegura que esté por encima de otros elementos */
+  transition: max-height 0.3s ease-out;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.nav-list.open {
+  display: flex; /* Muestra la lista cuando está abierta */
+  max-height: 500px; /* Ajusta según la cantidad de elementos */
+  background-color: aliceblue;
+}
+
+.nav-list li {
+  margin-bottom: 10px;
+  text-align: center; /* Centra los enlaces */
+}
+
+/* Estilos de botón para los enlaces de la navbar */
+.nav-list a {
+  text-decoration: none;
+  background-color: #28a745; /* Color de fondo del botón */
+  color: #fff; /* Color del texto del botón */
+  padding: 10px 15px; /* Espaciado interno del botón */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: block; /* Hace que los enlaces ocupen todo el ancho del li */
+  margin: 0 15px; /* Agrega margen horizontal */
+}
+
+.nav-list a:hover {
+  background-color: #218838; /* Color de fondo más oscuro al pasar el ratón */
+  transform: translateY(-2px); /* Mueve el botón ligeramente hacia arriba */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); /* Aumenta la sombra en hover */
+}
+
+.nav-list a:active {
+  transform: translateY(1px); /* Mueve el botón ligeramente hacia abajo al hacer clic */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Reduce la sombra al hacer clic */
+}
+
 .nav-list .disabled {
   pointer-events: none; /* Evita que el enlace se pueda clicar */
   opacity: 0.5; /* Reduce la opacidad para un efecto visual */
   cursor: default; /* Cambia el cursor a un puntero normal */
 }
 
+/* Icono de hamburguesa para el menú */
+.menu-toggle {
+  cursor: pointer;
+  display: block;
+  background: none;
+  border: none;
+  font-size: 1.5rem; /* Ajusta el tamaño del icono */
+  color: #28a745; /* Color del icono */
+  padding: 0;
+}
 
-  /* Estilos para pantallas más grandes */
-  @media (min-width: 768px) {
-    .nav-list {
-      display: flex; 
-    }
-  
-    .nav-list li {
-      margin-left: 20px; 
-      margin-bottom: 0; 
-    }
-  
-    .menu-toggle {
-      display: none; 
-    }
+/* Oculta el icono de hamburguesa en pantallas más grandes */
+@media (min-width: 768px) {
+  .navbar {
+    width: 100%;
+    justify-content: flex-start; /* Alinea al inicio en escritorio */
   }
-  
 
+  .nav-mobile {
+    display: none;
+  }
+
+  .nav-list {
+    display: flex;
+    flex-direction: row;
+    position: static;
+    max-height: none;
+    width: auto;
+    box-shadow: none;
+    margin-left: auto; 
+    margin-right: auto;
+  }
+
+  .nav-list li {
+    margin-left: 20px;
+    margin-bottom: 0;
+    background-color: transparent;
+  }
+
+  .nav-list li:first-child {
+    margin-left: 0;
+  }
+
+  .nav-list a {
+    display: inline-block;
+    margin: 0;
+  }
+}
