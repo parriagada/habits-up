@@ -1,48 +1,119 @@
+/* Pomodoro.css */
+:root{
+  --pixel-size: 2 ;
+}
+
 .pomodoro-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  max-width: 600px; /* Ancho máximo del contenedor */
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.pomodoro-container h2 {
+  text-align: center;
+  color: #28a745;
+  margin-bottom: 20px; /* Espacio debajo del título */
+}
+
+.pomodoro-container label {
+  display: block; /* Etiquetas en bloque para que ocupen todo el ancho */
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.pomodoro-container input[type="number"],
+.pomodoro-container select,
+.pomodoro-container input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.pomodoro-container button {
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 10px; /* Espacio entre botones */
+}
+
+.pomodoro-container button:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pomodoro-container button:active {
+  transform: translateY(1px);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pomodoro-container p {
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.bonsai-spritesheet {
+  width: calc(160px * 11); /* Ancho total del spritesheet */
+  height: 160px;
+  image-rendering: pixelated;
+  background-image: url(../../public/images/bonsai\ nivel\ 0-10\ 160x160.png); /* Ruta relativa a public */
+  background-repeat: no-repeat;
+  background-size: auto 100%; /* Ajusta el tamaño para que se vea completo verticalmente*/
+}
+
+.imagen-pomodoro {
+  width: 160px; /* Ancho de un solo frame */
+  overflow: hidden;
+}
+
+.historial-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.historial-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.historial-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
+  align-items: baseline;
+}
+
+.historial-label {
+  font-weight: bold;
+  width: auto;
+  min-width: 80px;
+  display: inline-block;
+}
+
+.historial-value {
+  flex-grow: 1;
+  word-break: break-word;
+}
+
+/* Media Query para mejor responsividad en pantallas más grandes */
+@media (min-width: 768px) {
+  .pomodoro-container {
+      max-width: 80%; /* Ancho máximo en pantallas grandes */
   }
-  
-  .input-group {
-    margin-bottom: 10px;
-  }
-  
-  .input-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .input-group input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  .temporizador {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3rem;
-    margin-bottom: 20px;
-  }
-  
-  .botones button {
-    margin: 0 5px;
-    padding: 8px 15px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
+}

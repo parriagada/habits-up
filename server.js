@@ -8,6 +8,7 @@ const Usuario = require('./models/Usuario');
 const bcrypt = require('bcrypt');
 const session = require('express-session'); // Importa express-session
 const habitosRouter = require('./routes/habitos');
+const pomodorosRouter = require('./routes/pomodoro');
 require('dotenv').config();
 
 const app = express();
@@ -67,9 +68,10 @@ mongoose.connect(URI, {
 .then(() => console.log('Conectado a MongoDB'))
 .catch(err => console.error('Error específico al conectar a MongoDB:', err));
 
+
 // Rutas
 app.use('/usuarios', require('./routes/usuarios')); // Ruta para manejar los usuarios
-app.use('/pomodoro', require('./routes/pomodoro')); // Ruta para manejar los temporizadores Pomodoro
+app.use('/pomodoros', pomodorosRouter);
 app.use('/habitos', habitosRouter);
 
 // Ruta de prueba para verificar autenticación (proteger otras rutas de manera similar)
