@@ -264,7 +264,7 @@ function Pomodoro() {
                     <p>Tiempo {isBreak ? "de Descanso" : "Restante"}: {formatTime(remainingTime)}</p>
                     <div className="imagen-pomodoro" style={{ margin: '10px 0', display: 'flex', justifyContent: 'center' }}>
                         <div
-                            className="bonsai-spritesheet"
+                            className="bonsai-pomodoro-spritesheet"
                             style={{
                                 backgroundPositionX: `calc(${calcularIndiceBonsai() * -160}px * var(--pixel-size))`
                             }}

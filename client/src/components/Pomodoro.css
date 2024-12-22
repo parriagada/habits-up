@@ -1,6 +1,6 @@
 /* Pomodoro.css */
 :root{
-  --pixel-size: 2 ;
+  --pixel-pomodoro-size: 2 ;
 }
 
 .pomodoro-container {
@@ -64,7 +64,7 @@
   font-size: 1.1em;
 }
 
-.bonsai-spritesheet {
+.bonsai-pomodoro-spritesheet {
   width: calc(160px * 11); /* Ancho total del spritesheet */
   height: 160px;
   image-rendering: pixelated;
