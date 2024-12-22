@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import NavBar from './components/NavBar'
 import Registro from './components/Registro';
 import Login from './components/Login';

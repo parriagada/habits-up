@@ -13,6 +13,7 @@ function Habitos() {
       dias: [],
     },
   });
+
   const [mostrarPopupNotificaciones, setMostrarPopupNotificaciones] =
     useState(false);
   const diasSemana = [
@@ -24,6 +25,9 @@ function Habitos() {
     "Sábado",
     "Domingo",
   ];
+
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
+
   const [editandoHabito, setEditandoHabito] = useState(null);
 
   const notificacionesProgramadas = useRef({});
@@ -124,7 +128,7 @@ function Habitos() {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/habitos", {
+        const response = await fetch(`${BASE_URL}/habitos`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -201,7 +205,7 @@ function Habitos() {
         solicitarPermisoNotificaciones();
       }
 
-      const response = await fetch("http://localhost:5000/habitos", {
+      const response = await fetch(`${BASE_URL}/habitos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -248,7 +252,7 @@ function Habitos() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/habitos/${id}`, {
+      const response = await fetch(`${BASE_URL}/habitos/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -320,17 +324,15 @@ function Habitos() {
         return;
       }
 
-      const response = await fetch(
-        `http://localhost:5000/habitos/${habitoId}/cumplido`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Asegúrate de enviar JSON
-          },
-          body: JSON.stringify({ cumplido: true }), // Envía el estado "cumplido"
-        }
-      );
+
+      const response = await fetch(`${BASE_URL}/habitos/${habitoId}/cumplido`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json' // Asegúrate de enviar JSON
+        },
+        body: JSON.stringify({ cumplido: true }) // Envía el estado "cumplido"
+      });
 
       if (response.ok) {
         const data = await response.json(); // Obtén la respuesta del servidor
@@ -361,21 +363,19 @@ function Habitos() {
         return;
       }
 
-      console.log(`URL: http://localhost:5000/habitos/editar/${id}`); // Verificar la URL
-      console.log("Cuerpo:", JSON.stringify(editandoHabito)); // Verificar el cuerpo de la solicitud
-
-      const response = await fetch(
-        `http://localhost:5000/habitos/editar/${id}`,
-        {
-          // Asegurarse de que la URL es correcta
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json", // Encabezado Content-Type
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(editandoHabito),
-        }
-      );
+  
+      console.log(`URL: ${BASE_URL}/habitos/editar/${id}`); // Verificar la URL
+      console.log('Cuerpo:', JSON.stringify(editandoHabito)); // Verificar el cuerpo de la solicitud
+  
+      const response = await fetch(`${BASE_URL}/habitos/editar/${id}`, { // Asegurarse de que la URL es correcta
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json", // Encabezado Content-Type
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(editandoHabito),
+      });
+  
 
       console.log(response); // Imprimir la respuesta completa
 
