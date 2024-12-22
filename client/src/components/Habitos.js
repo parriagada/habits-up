@@ -29,13 +29,7 @@ function Habitos() {
   const notificacionesProgramadas = useRef({});
 
   const mostrarNotificacionDePrueba = () => {
-    if (Notification.permission === "granted") {
-      new Notification("¡Prueba de Notificación!", {
-        body: "Esta es una notificación de prueba para tu hábito.",
-        // icon: "/ruta/a/tu/icono.png", // Reemplaza con la ruta real
-      });
-      console.log("Notificación enviada");
-    } else if (Notification.permission !== "denied") {
+    if (Notification.permission !== "denied") {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           new Notification("¡Prueba de Notificación!", {
@@ -150,32 +144,51 @@ function Habitos() {
 
     obtenerHabitos();
 
-    const verificarPermisosNotificaciones = async () => {
-      if (!("Notification" in window)) {
-        // El navegador no soporta notificaciones
-        return;
-      }
-
-      const permiso = await Notification.requestPermission();
-      if (permiso !== "granted") {
-        setMostrarPopupNotificaciones(true);
-      }
-    };
-    Object.values(notificacionesProgramadas.current).forEach(clearTimeout);
-    notificacionesProgramadas.current = {};
-
-    verificarPermisosNotificaciones();
+    
 
     habitos.forEach((habito) => programarNotificacion(habito));
   }, [habitos, programarNotificacion]);
   
   const solicitarPermisoNotificaciones = async () => {
-    const permiso = await Notification.requestPermission();
-    if (permiso === "granted") {
-      setMostrarPopupNotificaciones(false);
-    }
+    setMostrarPopupNotificaciones(true);
     //Si el usuario deniega el permiso se mantiene el popup
   };
+
+  const verificarPermisosNotificaciones = async () => {
+    if (!("Notification" in window)) {
+      // El navegador no soporta notificaciones
+      return;
+    }
+
+    if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("¡Prueba de Notificación!", {
+            body: "Esta es una notificación de prueba para tu hábito.",
+            // icon: "/ruta/a/tu/icono.png", // Reemplaza con la ruta real
+          });
+          console.log("Permiso concedido");
+          setMostrarPopupNotificaciones(false);
+
+        } else {
+          console.log("Permiso denegado");
+          alert(
+            "Permiso de notificaciones denegado. Por favor, habilítalas en la configuración del navegador."
+            
+          ); // Mensaje más claro
+          setMostrarPopupNotificaciones(false);
+        }
+      });
+    }
+    // if (permiso !== "granted") {
+    //   setMostrarPopupNotificaciones(true);
+    // } else {
+    //   setMostrarPopupNotificaciones(false);
+    // }
+  };
+  Object.values(notificacionesProgramadas.current).forEach(clearTimeout);
+  notificacionesProgramadas.current = {};
+
 
   const agregarHabito = async () => {
     try {
@@ -185,9 +198,7 @@ function Habitos() {
         return;
       }
       if (Notification.permission !== "granted") {
-        alert(
-          "Recuerda activar las notificaciones para recibir recordatorios."
-        );
+        solicitarPermisoNotificaciones();
       }
 
       const response = await fetch("http://localhost:5000/habitos", {
@@ -392,13 +403,14 @@ function Habitos() {
 
   return (
     <div className="contenedor">
-      <button onClick={mostrarNotificacionDePrueba}>Probar Notificación</button>
+      <button onClick={solicitarPermisoNotificaciones}>Probar Notificación</button>
+      {/* <button onClick={mostrarNotificacionDePrueba}>Probar Notificación</button> */}
       {mostrarPopupNotificaciones && (
         <div className="popup-notificaciones">
           <div className="popup-contenido">
             <h3>¿Quieres recibir recordatorios de tus hábitos?</h3>
             <p>Activa las notificaciones para no olvidar tus tareas.</p>
-            <button onClick={solicitarPermisoNotificaciones}>
+            <button onClick={verificarPermisosNotificaciones}>
               Activar Notificaciones
             </button>
             <button onClick={() => setMostrarPopupNotificaciones(false)}>
