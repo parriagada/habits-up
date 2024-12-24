@@ -11,6 +11,7 @@ const UsuarioSchema = new mongoose.Schema({
   puntos: { type: Number, default: 0 },
   nivel: { type: Number, default: 1 },
   amigos: [String], 
+  rol: { type: String, default: 'usuario' }
 });
 
 module.exports = mongoose.model('Usuario', UsuarioSchema);
