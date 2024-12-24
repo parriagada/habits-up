@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const session = require('express-session'); // Importa express-session
 const habitosRouter = require('./routes/habitos');
 const pomodorosRouter = require('./routes/pomodoro');
+const forosRouter = require('./routes/foros');
 require('dotenv').config();
 
 const app = express();
@@ -73,6 +74,7 @@ mongoose.connect(URI, {
 app.use('/usuarios', require('./routes/usuarios')); // Ruta para manejar los usuarios
 app.use('/pomodoros', pomodorosRouter);
 app.use('/habitos', habitosRouter);
+app.use('/foros', forosRouter); // Usa el router de foros
 
 // Ruta de prueba para verificar autenticación (proteger otras rutas de manera similar)
 app.get('/perfil', isAuthenticated, (req, res) => { // Solo usuarios autenticados pueden acceder a esta ruta
