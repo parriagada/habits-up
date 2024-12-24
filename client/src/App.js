@@ -8,25 +8,43 @@ import Habitos from './components/Habitos';
 import HabitoDetalle from './components/HabitoDetalle';
 import Pomodoro from './components/Pomodoro';
 
+import { jwtDecode } from 'jwt-decode';
+
 function App() {
-   const isLoggedIn = !!localStorage.getItem('token');
+  const isLoggedIn = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+
+      if (decoded.exp < currentTime) {
+        console.log('Token expired');
+        localStorage.removeItem('token');
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return false;
+    }
+  };
   return (
     <BrowserRouter>
       <div>
         <NavBar />
         <Routes>
+        <Route path="/" element={isLoggedIn() ? <Navigate to="/habitos" /> : <Navigate to="/login" />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/habitos"
-            element={isLoggedIn ? <Habitos /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/habitos/:habitoId"
-            element={isLoggedIn ? <HabitoDetalle /> : <Navigate to="/login" />}
-          />
-          <Route path="*" element={<Navigate to={isLoggedIn ? '/habitos' : '/registro'} />} />
+          <Route path="/habitos" element={isLoggedIn() ? <Habitos /> : <Navigate to="/login" />} />
+          <Route path="/habitos/:habitoId" element={isLoggedIn() ? <HabitoDetalle /> : <Navigate to="/login" />} />
           <Route path="/pomodoro" element={<Pomodoro />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
     </BrowserRouter>
