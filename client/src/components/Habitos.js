@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./Habitos.css";
 import { Link } from "react-router-dom";
+import { obtenerInformacionUsuario } from "../utils/api";
+
 
 function Habitos() {
   const [habitos, setHabitos] = useState([]);
@@ -59,42 +61,14 @@ function Habitos() {
   };
   // useEffect para obtener los hábitos al cargar el componente y solicitar permisos de notificación.
   useEffect(() => {
-    const obtenerInformacionUsuario = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No hay token de autenticación.");
-          return;
-        }
-
-        const response = await fetch(`${BASE_URL}/usuarios/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUsuario(data); // Guarda la información del usuario
-          // Verifica si el usuario tiene el rol de administrador
-          if (data.rol === "administrador") {
-            setEsAdmin(true);
-          } else {
-            setEsAdmin(false); // Asegurarse de que es false si el rol no es administrador
-          }
-        } else {
-          const errorData = await response.json();
-          console.error(
-            "Error al obtener información del usuario:",
-            errorData.message
-          );
-        }
-      } catch (error) {
-        console.error("Error al obtener información del usuario:", error);
+    const fetchData = async () => {
+      const usuario = await obtenerInformacionUsuario();
+      if (usuario) {
+        setUsuario(usuario);
+        setEsAdmin(usuario.rol === "administrador");
       }
     };
-
-    obtenerInformacionUsuario();
+    fetchData();
   }, []);
 
   const programarNotificacion = useCallback((habito) => {
@@ -356,6 +330,9 @@ function Habitos() {
 
   const handleEditarClick = (habito) => {
     // Al hacer clic en editar, si el tipo es diario, limpia los días
+    if (Notification.permission) {
+      setMostrarPopupNotificaciones(true)
+    }
     if (habito.recordatorio.tipo === "diario") {
       habito.recordatorio.dias = [];
     }
