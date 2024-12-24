@@ -152,7 +152,7 @@ function Habitos() {
     tiempoParaNotificacion.getTime() - ahora.getTime();
     
     notificacionesProgramadas.current[habito._id] = setTimeout(() => {
-      new Notification(habito.nombre, { body: habito.descripcion });
+      new Notification(`Recordatorio para: ${habito.nombre}`, { body: habito.descripcion });
       // Reprogramar SOLO si el componente sigue montado.
       if (notificacionesProgramadas.current[habito._id]) {
         programarNotificacion(habito);
