@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import NavBar from './components/NavBar'
@@ -7,6 +7,8 @@ import Login from './components/Login';
 import Habitos from './components/Habitos';
 import HabitoDetalle from './components/HabitoDetalle';
 import Pomodoro from './components/Pomodoro';
+import Foros from './components/Foros';
+import ForoDetalle from './components/ForoDetalle';
 
 import { jwtDecode } from 'jwt-decode';
 
@@ -45,6 +47,8 @@ function App() {
           <Route path="/habitos/:habitoId" element={isLoggedIn() ? <HabitoDetalle /> : <Navigate to="/login" />} />
           <Route path="/pomodoro" element={<Pomodoro />} />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/foros" element={<Foros />} />
+          <Route path="/foros/:id" element={<ForoDetalle />} />
         </Routes>
       </div>
     </BrowserRouter>
