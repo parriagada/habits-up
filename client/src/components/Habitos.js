@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
 import "./Habitos.css";
 import { Link } from "react-router-dom";
-import { obtenerInformacionUsuario } from "../utils/api";
-
+// import { obtenerInformacionUsuario } from "../utils/api";
+import { UserContext } from '../context/UserContext';
 
 function Habitos() {
   const [habitos, setHabitos] = useState([]);
@@ -28,48 +28,37 @@ function Habitos() {
     "Domingo",
   ];
 
-  const BASE_URL = process.env.REACT_APP_BACKEND_URL
+  
 
   const [editandoHabito, setEditandoHabito] = useState(null);
 
   const notificacionesProgramadas = useRef({});
 
-  const [esAdmin, setEsAdmin] = useState(false); // Estado para guardar si el usuario es administrador
-  const [usuario, setUsuario] = useState(null);
 
-  const mostrarNotificacionDePrueba = () => {
-    if (Notification.permission !== "denied") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          new Notification("¡Prueba de Notificación!", {
-            body: "Esta es una notificación de prueba para tu hábito.",
-            // icon: "/ruta/a/tu/icono.png", // Reemplaza con la ruta real
-          });
-          console.log("Permiso concedido");
-        } else {
-          console.log("Permiso denegado");
-          alert(
-            "Permiso de notificaciones denegado. Por favor, habilítalas en la configuración del navegador."
-          ); // Mensaje más claro
-        }
-      });
-    } else {
-      alert(
-        "Por favor activa las notificaciones en la configuración de tu navegador para poder recibir notificaciones. Ya has denegado el permiso anteriormente."
-      ); // Mensaje más claro
-    }
-  };
-  // useEffect para obtener los hábitos al cargar el componente y solicitar permisos de notificación.
-  useEffect(() => {
-    const fetchData = async () => {
-      const usuario = await obtenerInformacionUsuario();
-      if (usuario) {
-        setUsuario(usuario);
-        setEsAdmin(usuario.rol === "administrador");
-      }
-    };
-    fetchData();
-  }, []);
+  // const mostrarNotificacionDePrueba = () => {
+  //   if (Notification.permission !== "denied") {
+  //     Notification.requestPermission().then((permission) => {
+  //       if (permission === "granted") {
+  //         new Notification("¡Prueba de Notificación!", {
+  //           body: "Esta es una notificación de prueba para tu hábito.",
+  //           // icon: "/ruta/a/tu/icono.png", // Reemplaza con la ruta real
+  //         });
+  //         console.log("Permiso concedido");
+  //       } else {
+  //         console.log("Permiso denegado");
+  //         alert(
+  //           "Permiso de notificaciones denegado. Por favor, habilítalas en la configuración del navegador."
+  //         ); // Mensaje más claro
+  //       }
+  //     });
+  //   } else {
+  //     alert(
+  //       "Por favor activa las notificaciones en la configuración de tu navegador para poder recibir notificaciones. Ya has denegado el permiso anteriormente."
+  //     ); // Mensaje más claro
+  //   }
+  // };
+  
+  const { esAdmin } = useContext(UserContext)
 
   const programarNotificacion = useCallback((habito) => {
     if (!habito.recordatorio || !habito.recordatorio.hora) return;
@@ -133,8 +122,10 @@ function Habitos() {
       }
     }, tiempoEnMilisegundos);
   }, []);
-  
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL
   useEffect(() => {
+
+    
     const obtenerHabitos = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -162,7 +153,7 @@ function Habitos() {
     };
     obtenerHabitos();
     habitos.forEach((habito) => programarNotificacion(habito));
-  }, [habitos, programarNotificacion]);
+  }, [habitos, programarNotificacion]); // eslint-disable-line react-hooks/exhaustive-deps
   
   const solicitarPermisoNotificaciones = async () => {
     console.log(Notification.permission)
@@ -330,7 +321,7 @@ function Habitos() {
 
   const handleEditarClick = (habito) => {
     // Al hacer clic en editar, si el tipo es diario, limpia los días
-    if (Notification.permission) {
+    if (Notification.permission === 'default') {
       setMostrarPopupNotificaciones(true)
     }
     if (habito.recordatorio.tipo === "diario") {
