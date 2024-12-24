@@ -32,6 +32,9 @@ function Habitos() {
 
   const notificacionesProgramadas = useRef({});
 
+  const [esAdmin, setEsAdmin] = useState(false); // Estado para guardar si el usuario es administrador
+  const [usuario, setUsuario] = useState(null);
+
   const mostrarNotificacionDePrueba = () => {
     if (Notification.permission !== "denied") {
       Notification.requestPermission().then((permission) => {
@@ -55,7 +58,45 @@ function Habitos() {
     }
   };
   // useEffect para obtener los hábitos al cargar el componente y solicitar permisos de notificación.
-  
+  useEffect(() => {
+    const obtenerInformacionUsuario = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No hay token de autenticación.");
+          return;
+        }
+
+        const response = await fetch(`${BASE_URL}/usuarios/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUsuario(data); // Guarda la información del usuario
+          // Verifica si el usuario tiene el rol de administrador
+          if (data.rol === "administrador") {
+            setEsAdmin(true);
+          } else {
+            setEsAdmin(false); // Asegurarse de que es false si el rol no es administrador
+          }
+        } else {
+          const errorData = await response.json();
+          console.error(
+            "Error al obtener información del usuario:",
+            errorData.message
+          );
+        }
+      } catch (error) {
+        console.error("Error al obtener información del usuario:", error);
+      }
+    };
+
+    obtenerInformacionUsuario();
+  }, []);
+
   const programarNotificacion = useCallback((habito) => {
     if (!habito.recordatorio || !habito.recordatorio.hora) return;
     
@@ -145,11 +186,7 @@ function Habitos() {
         console.error("Error al obtener hábitos:", error);
       }
     };
-
     obtenerHabitos();
-
-    
-
     habitos.forEach((habito) => programarNotificacion(habito));
   }, [habitos, programarNotificacion]);
   
@@ -403,7 +440,11 @@ function Habitos() {
 
   return (
     <div className="contenedor">
-      <button onClick={solicitarPermisoNotificaciones}>Probar Notificación</button>
+      {esAdmin && (
+        <button onClick={solicitarPermisoNotificaciones}>
+          Probar Notificación
+        </button>
+      )}
       {/* <button onClick={mostrarNotificacionDePrueba}>Probar Notificación</button> */}
       {mostrarPopupNotificaciones && (
         <div className="popup-notificaciones">

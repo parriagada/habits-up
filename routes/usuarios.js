@@ -3,6 +3,8 @@ const router = express.Router();
 const Usuario = require('../models/Usuario');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Importa jsonwebtoken
+const { authenticateToken, esAdministrador } = require('../middleware/authMiddleware');
+
 
 // Ruta para registrar un nuevo usuario
 router.post('/registrar', async (req, res) => {
@@ -60,6 +62,22 @@ router.post('/login', async (req, res) => {
     res.json({ token });
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+});
+
+// GET  Obtener información del usuario actual
+router.get('/me', authenticateToken, async (req, res) => { // Usamos authenticateToken
+  try {
+    // authenticateToken ya ha verificado el token y ha añadido el usuario (con el ID) al objeto req (req.user)
+    // Ahora buscamos al usuario por su ID, excluyendo la contraseña por seguridad
+    const usuario = await Usuario.findById(req.user.id).select('-contrasena'); // Usamos req.user.id
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    res.json(usuario);
+  } catch (error) {
+    console.error('Error al obtener la información del usuario:', error);
     res.status(500).json({ message: 'Error del servidor' });
   }
 });

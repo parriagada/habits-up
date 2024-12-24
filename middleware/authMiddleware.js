@@ -11,6 +11,24 @@ const authenticateToken = (req, res, next) => {
     req.user = user; // Almacena los datos del usuario en el objeto req
     next(); // Continúa con la siguiente función
   });
+
+  
 }
 
-module.exports = { authenticateToken };
+const esAdministrador = async (req, res, next) => {
+  try {
+    // Suponiendo que ya has verificado el token y tienes el usuario en req.user
+    const usuario = await Usuario.findById(req.user.id);
+
+    if (usuario && usuario.rol === 'administrador') {
+      next(); // El usuario es administrador, continúa
+    } else {
+      res.status(403).json({ message: 'Acceso denegado. Se requiere rol de administrador.' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error al verificar el rol de administrador' });
+  }
+};
+
+
+module.exports = { authenticateToken, esAdministrador };
