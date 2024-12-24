@@ -191,7 +191,16 @@ function Habitos() {
   }, [habitos, programarNotificacion]);
   
   const solicitarPermisoNotificaciones = async () => {
-    setMostrarPopupNotificaciones(true);
+    console.log(Notification.permission)
+    if (Notification.permission !== "granted") {
+      // El usuario ya denegó el permiso, no se solicita de nuevo
+      setMostrarPopupNotificaciones(true);
+    } else {
+      // El usuario ya denegó el permiso, no se solicita de nuevo
+      verificarPermisosNotificaciones()    
+    }
+
+    // setMostrarPopupNotificaciones(true);
     //Si el usuario deniega el permiso se mantiene el popup
   };
 
@@ -204,8 +213,8 @@ function Habitos() {
     if (Notification.permission !== "denied") {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
-          new Notification("¡Prueba de Notificación!", {
-            body: "Esta es una notificación de prueba para tu hábito.",
+          new Notification("¡Esta es una notificación de HabitsUps!", {
+            body: "Asi es como llegaran tus notificaciones de tus hábitos",
             // icon: "/ruta/a/tu/icono.png", // Reemplaza con la ruta real
           });
           console.log("Permiso concedido");
